@@ -1548,17 +1548,6 @@ function initApp() {
   nav('dashboard', document.querySelector('.nav-item.active') || document.querySelector('.nav-item'));
 }
 
-  // If evaluator-apply nav item should be hidden for existing evaluators
-  if (isEval) {
-    const applyNav = Array.from(document.querySelectorAll('.nav-item'))
-      .find(el => el.textContent.includes('Apply as Evaluator'));
-    if (applyNav) applyNav.style.display = 'none';
-  }
-
-  fillProfile();
-  nav('dashboard', document.querySelector('.nav-item.active') || document.querySelector('.nav-item'));
-}
-
 async function doLogout() {
   if (TOKEN) await api('logout');
   TOKEN = null;
