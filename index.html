@@ -1,0 +1,2319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MSRC – Medical Students Research Conference</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy:#0f2444; --navy-mid:#1a3d6e; --navy-light:#2a5298;
+      --gold:#c8a84b; --gold-light:#e8c96a; --gold-pale:#f9f3e3;
+      --ivory:#fafaf7; --white:#fff;
+      --g50:#f8f9fc; --g100:#eef0f6; --g300:#b8bfcc;
+      --g500:#6b7280; --g700:#374151; --g900:#111827;
+      --success:#0e7f3c; --danger:#c1392b; --warning:#d97706; --info:#1e6fb5;
+      --oral:#7c3aed; --poster:#0891b2;
+      --r:10px; --rl:18px;
+      --sh:0 4px 16px rgba(15,36,68,.12); --shl:0 12px 48px rgba(15,36,68,.18);
+      --tr:all .22s cubic-bezier(.4,0,.2,1);
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{font-family:'DM Sans',sans-serif;background:var(--ivory);color:var(--g900);line-height:1.6;font-size:15px}
+
+    /* ── APP SHELL ── */
+    .app{display:flex;min-height:100vh}
+
+    /* ── SIDEBAR ── */
+    .sidebar{width:260px;background:var(--navy);color:#fff;position:fixed;height:100vh;overflow-y:auto;z-index:100;display:flex;flex-direction:column;transition:var(--tr)}
+    .sidebar-logo{padding:28px 24px 20px;border-bottom:1px solid rgba(255,255,255,.08)}
+    .logo-mark{font-family:'Playfair Display',serif;font-size:28px;font-weight:900;color:var(--gold);letter-spacing:1px}
+    .logo-sub{font-size:10px;color:rgba(255,255,255,.5);letter-spacing:1.5px;text-transform:uppercase;margin-top:2px}
+    .sidebar-user{padding:16px 24px;border-bottom:1px solid rgba(255,255,255,.08)}
+    .user-info{display:flex;align-items:center;gap:12px}
+    .avatar{width:38px;height:38px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:var(--navy);flex-shrink:0}
+    .u-name{font-size:13px;font-weight:600}
+    .u-role{font-size:10px;background:rgba(200,168,75,.2);color:var(--gold);padding:2px 8px;border-radius:20px;border:1px solid rgba(200,168,75,.3);display:inline-block;margin-top:2px}
+    .sidebar-nav{flex:1;padding:12px 0}
+    .nav-lbl{font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.35);padding:8px 24px 4px;margin-top:8px;display:block}
+    .nav-item{display:flex;align-items:center;gap:12px;padding:11px 24px;color:rgba(255,255,255,.7);font-size:14px;font-weight:500;cursor:pointer;transition:var(--tr);border-left:3px solid transparent;user-select:none}
+    .nav-item:hover{background:rgba(255,255,255,.06);color:#fff}
+    .nav-item.active{background:rgba(200,168,75,.12);color:var(--gold);border-left-color:var(--gold)}
+    .nav-icon{font-size:16px;width:20px;text-align:center}
+    .nav-badge{margin-left:auto;background:var(--gold);color:var(--navy);font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px}
+    .sidebar-footer{padding:16px 24px;border-top:1px solid rgba(255,255,255,.08)}
+    .logout-btn{width:100%;background:rgba(193,57,43,.15);border:1px solid rgba(193,57,43,.3);color:#ff6b6b;padding:10px;border-radius:var(--r);font-size:13px;cursor:pointer;font-family:inherit;font-weight:500;transition:var(--tr)}
+    .logout-btn:hover{background:rgba(193,57,43,.3)}
+
+    /* ── MAIN ── */
+    .main{margin-left:260px;flex:1;min-height:100vh}
+    .topbar{background:#fff;border-bottom:1px solid var(--g100);padding:16px 32px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+    .topbar-title{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--navy)}
+    .topbar-r{display:flex;align-items:center;gap:16px}
+    .conf-badge{background:var(--gold-pale);border:1px solid var(--gold);color:var(--navy);padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600}
+    .page-wrap{padding:32px}
+    .page{display:none}.page.active{display:block}
+
+    /* ── AUTH ── */
+    .auth-wrap{min-height:100vh;display:flex;background:var(--navy);position:relative;overflow:hidden}
+    .auth-wrap::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 20% 50%,rgba(200,168,75,.08) 0%,transparent 60%)}
+    .auth-brand{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px;position:relative;z-index:1}
+    .brand-logo{font-family:'Playfair Display',serif;font-size:80px;font-weight:900;color:var(--gold);letter-spacing:-2px;line-height:1}
+    .brand-full{color:#fff;font-size:15px;opacity:.7;margin-top:12px;text-align:center;letter-spacing:1px}
+    .brand-desc{color:rgba(255,255,255,.45);font-size:13px;margin-top:24px;text-align:center;max-width:280px;line-height:1.8}
+    .brand-feats{margin-top:40px;display:flex;flex-direction:column;gap:10px}
+    .brand-feat{display:flex;align-items:center;gap:10px;color:rgba(255,255,255,.55);font-size:13px}
+    .auth-panel{width:480px;background:#fff;padding:48px 44px;display:flex;flex-direction:column;justify-content:center;position:relative;z-index:1;overflow-y:auto}
+    .auth-title{font-family:'Playfair Display',serif;font-size:28px;font-weight:700;color:var(--navy);margin-bottom:6px}
+    .auth-sub{color:var(--g500);font-size:14px;margin-bottom:32px}
+    .auth-foot{text-align:center;margin-top:24px;font-size:13px;color:var(--g500)}
+    .auth-link{color:var(--navy-light);font-weight:600;cursor:pointer}
+    .auth-link:hover{text-decoration:underline}
+
+    /* ── FORMS ── */
+    .fg{margin-bottom:18px}
+    .flbl{display:block;font-size:13px;font-weight:600;color:var(--g700);margin-bottom:6px}
+    .flbl.req::after{content:' *';color:var(--danger)}
+    .fi,.fsel,.fta{width:100%;padding:11px 14px;border:1.5px solid var(--g100);border-radius:var(--r);font-size:14px;font-family:inherit;color:var(--g900);background:var(--g50);transition:var(--tr);outline:none}
+    .fi:focus,.fsel:focus,.fta:focus{border-color:var(--navy-light);background:#fff;box-shadow:0 0 0 3px rgba(26,61,110,.08)}
+    .fta{resize:vertical;min-height:100px}
+    .frow{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    .fhint{font-size:12px;color:var(--g500);margin-top:4px}
+    .ferr{font-size:12px;color:var(--danger);margin-top:4px}
+    .wcount{display:flex;justify-content:flex-end;font-size:11px;color:var(--g500);margin-top:4px}
+    .wcount.over{color:var(--danger);font-weight:600}
+    .cbg{display:flex;align-items:flex-start;gap:10px}
+    .cbg input[type=checkbox]{width:16px;height:16px;accent-color:var(--navy);margin-top:2px;flex-shrink:0}
+    .cblbl{font-size:13px;color:var(--g700);line-height:1.5}
+    .fi[readonly]{background:var(--g100);color:var(--g500)}
+
+    /* ── BUTTONS ── */
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:11px 24px;border-radius:var(--r);font-size:14px;font-weight:600;font-family:inherit;cursor:pointer;border:none;transition:var(--tr);white-space:nowrap}
+    .btn-p{background:var(--navy);color:#fff}.btn-p:hover{background:var(--navy-light);transform:translateY(-1px);box-shadow:0 4px 12px rgba(15,36,68,.3)}
+    .btn-g{background:var(--gold);color:var(--navy)}.btn-g:hover{background:var(--gold-light);transform:translateY(-1px)}
+    .btn-o{background:transparent;border:1.5px solid var(--navy);color:var(--navy)}.btn-o:hover{background:var(--navy);color:#fff}
+    .btn-d{background:var(--danger);color:#fff}.btn-s{background:var(--success);color:#fff}
+    .btn-sm{padding:7px 14px;font-size:12px}
+    .btn-lg{padding:14px 32px;font-size:15px}
+    .btn-fw{width:100%}
+    .btn:disabled{opacity:.5;cursor:not-allowed;transform:none!important}
+
+    /* ── CARDS ── */
+    .card{background:#fff;border-radius:var(--rl);box-shadow:0 1px 3px rgba(0,0,0,.06);border:1px solid var(--g100);overflow:hidden}
+    .card-hd{padding:20px 24px 16px;border-bottom:1px solid var(--g100);display:flex;align-items:center;justify-content:space-between}
+    .card-title{font-family:'Playfair Display',serif;font-size:17px;font-weight:700;color:var(--navy)}
+    .card-body{padding:24px}
+    .card-ft{padding:16px 24px;background:var(--g50);border-top:1px solid var(--g100)}
+
+    /* ── STATS ── */
+    .sgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:16px;margin-bottom:28px}
+    .scard{background:#fff;border-radius:var(--rl);padding:20px 22px;border:1px solid var(--g100);transition:var(--tr)}
+    .scard:hover{box-shadow:var(--sh);transform:translateY(-2px)}
+    .sicon{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:14px}
+    .ic-navy{background:rgba(15,36,68,.08)}.ic-gold{background:rgba(200,168,75,.15)}.ic-green{background:rgba(14,127,60,.1)}.ic-blue{background:rgba(30,111,181,.1)}
+    .sval{font-family:'Playfair Display',serif;font-size:32px;font-weight:700;color:var(--navy);line-height:1}
+    .slbl{font-size:12px;color:var(--g500);margin-top:4px;font-weight:500}
+
+    /* ── BADGES ── */
+    .badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600}
+    .b-draft{background:var(--g100);color:var(--g700)}
+    .b-sub{background:rgba(30,111,181,.1);color:var(--info)}
+    .b-review{background:rgba(217,119,6,.1);color:var(--warning)}
+    .b-accept{background:rgba(14,127,60,.1);color:var(--success)}
+    .b-reject{background:rgba(193,57,43,.1);color:var(--danger)}
+    .b-revise{background:rgba(217,119,6,.12);color:#b45309}
+    .b-pend{background:rgba(217,119,6,.1);color:var(--warning)}
+    .b-info{background:rgba(30,111,181,.1);color:var(--info)}
+    .b-paid{background:rgba(14,127,60,.1);color:var(--success)}
+    .b-online{background:rgba(30,111,181,.1);color:var(--info)}
+    .b-onsite{background:rgba(200,168,75,.15);color:#92600a}
+    
+    /* NEW BADGES FOR ACCEPTED CATEGORIES */
+    .b-oral{background:rgba(124, 58, 237, 0.1);color:var(--oral)}
+    .b-poster{background:rgba(8, 145, 178, 0.1);color:var(--poster)}
+
+    /* ── TABLE ── */
+    .tbl-wrap{overflow-x:auto}
+    table{width:100%;border-collapse:collapse}
+    thead{background:var(--g50)}
+    th{text-align:left;padding:12px 16px;font-size:11px;font-weight:700;color:var(--g500);letter-spacing:.8px;text-transform:uppercase;border-bottom:1px solid var(--g100); transition: background 0.2s;}
+    td{padding:13px 16px;font-size:13px;border-bottom:1px solid var(--g100);color:var(--g700)}
+    tr:last-child td{border-bottom:none}
+    tr:hover td{background:var(--g50)}
+    .admin-thead th{background:var(--navy);color:rgba(255,255,255,.75)}
+    .sortable{cursor:pointer; user-select:none;}
+    .sortable:hover{background:rgba(255,255,255,.1) !important; color: #fff;}
+
+    /* ── HERO ── */
+    .hero{background:linear-gradient(135deg,var(--navy) 0%,var(--navy-light) 100%);border-radius:var(--rl);padding:36px 40px;color:#fff;margin-bottom:28px;position:relative;overflow:hidden}
+    .hero::after{content:'MSRC';position:absolute;right:32px;top:50%;transform:translateY(-50%);font-family:'Playfair Display',serif;font-size:110px;font-weight:900;color:rgba(255,255,255,.04);pointer-events:none}
+    .hero-greet{font-size:12px;color:var(--gold);font-weight:600;letter-spacing:1.2px;text-transform:uppercase;margin-bottom:6px}
+    .hero-name{font-family:'Playfair Display',serif;font-size:30px;font-weight:700;margin-bottom:8px}
+    .hero-conf{color:rgba(255,255,255,.6);font-size:14px}
+
+    /* ── ACTION CARDS ── */
+    .acards{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:16px;margin-bottom:28px}
+    .acard{background:#fff;border:1px solid var(--g100);border-radius:var(--rl);padding:24px;cursor:pointer;transition:var(--tr);display:flex;flex-direction:column;gap:10px}
+    .acard:hover{border-color:var(--navy);box-shadow:var(--sh);transform:translateY(-2px)}
+    .acard-icon{width:48px;height:48px;border-radius:12px;background:var(--g50);display:flex;align-items:center;justify-content:center;font-size:22px}
+    .acard-title{font-weight:700;color:var(--navy);font-size:15px}
+    .acard-desc{font-size:12px;color:var(--g500);line-height:1.5}
+    .acard-arrow{margin-top:auto;color:var(--navy-light);font-size:18px}
+
+    /* ── STATUS BANNERS ── */
+    .sbanner{border-radius:var(--r);padding:12px 16px;display:flex;align-items:flex-start;gap:10px;font-size:13px;font-weight:500;margin-bottom:20px}
+    .sb-info{background:rgba(30,111,181,.07);color:var(--info);border:1px solid rgba(30,111,181,.2)}
+    .sb-ok{background:rgba(14,127,60,.07);color:var(--success);border:1px solid rgba(14,127,60,.2)}
+    .sb-warn{background:rgba(217,119,6,.07);color:var(--warning);border:1px solid rgba(217,119,6,.2)}
+    .sb-err{background:rgba(193,57,43,.07);color:var(--danger);border:1px solid rgba(193,57,43,.2)}
+
+    /* ── PRICING ── */
+    .price-box{background:var(--g50);border:1px solid var(--g100);border-radius:var(--r);padding:16px 20px}
+    .prow{display:flex;justify-content:space-between;padding:6px 0;font-size:14px;color:var(--g700)}
+    .prow.disc{color:var(--success)}
+    .pdiv{height:1px;background:var(--g100);margin:8px 0}
+    .ptotal{display:flex;justify-content:space-between;padding:8px 0 0;font-size:16px;font-weight:700;color:var(--navy)}
+
+    /* ── AUTHORS ── */
+    .author-item{background:var(--g50);border:1px solid var(--g100);border-radius:var(--r);padding:16px;margin-bottom:10px;position:relative}
+    .author-item.first{border-color:var(--gold);background:var(--gold-pale)}
+    .first-badge{display:inline-block;background:var(--gold);color:var(--navy);font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;margin-bottom:10px}
+    .rm-author{position:absolute;top:12px;right:12px;background:none;border:none;cursor:pointer;color:var(--g300);font-size:18px;line-height:1;transition:var(--tr)}
+    .rm-author:hover{color:var(--danger)}
+
+    /* ── CERT CARD ── */
+    .cert-card{background:linear-gradient(135deg,var(--navy) 0%,var(--navy-light) 100%);border-radius:var(--rl);padding:28px 32px;color:#fff;position:relative;overflow:hidden;border:1px solid rgba(200,168,75,.3);margin-bottom:16px}
+    .cert-card::before{content:'';position:absolute;top:-40px;right:-40px;width:200px;height:200px;background:rgba(200,168,75,.05);border-radius:50%}
+    .cert-type{font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:4px}
+    .cert-name{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;margin-bottom:4px}
+    .cert-role{font-size:13px;color:rgba(255,255,255,.6);margin-bottom:14px}
+    .cert-uid{font-size:11px;color:rgba(255,255,255,.4);font-family:monospace}
+    .cert-acts{margin-top:16px;display:flex;gap:10px}
+
+    /* ── EVAL SCORES ── */
+    .score-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:20px 0}
+    .score-f label{display:block;font-size:12px;font-weight:600;color:var(--g700);margin-bottom:6px}
+    .score-f input{width:100%;padding:10px;border:1.5px solid var(--g100);border-radius:var(--r);font-size:18px;font-family:inherit;text-align:center;outline:none;font-weight:700}
+    .score-f input:focus{border-color:var(--navy)}
+
+    /* ── EMPTY ── */
+    .empty{text-align:center;padding:60px 20px;color:var(--g500)}
+    .empty-icon{font-size:52px;margin-bottom:16px;opacity:.4}
+    .empty-title{font-size:17px;font-weight:600;color:var(--g700);margin-bottom:8px}
+    .empty-desc{font-size:14px;line-height:1.6}
+
+    /* ── DIVIDER / SECTION TITLE ── */
+    .divider{height:1px;background:var(--g100);margin:24px 0}
+    .sec-title{font-family:'Playfair Display',serif;font-size:21px;font-weight:700;color:var(--navy);margin-bottom:20px}
+
+    /* ── FILTER BAR ── */
+    .fbar{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px;align-items:center}
+    .fbar .fi,.fbar .fsel{width:auto;min-width:140px}
+
+    /* ── CHART BAR ── */
+    .cbar-row{margin-bottom:14px}
+    .cbar-meta{display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px;color:var(--g700)}
+    .cbar-track{background:var(--g100);border-radius:4px;height:8px}
+    .cbar-fill{height:100%;border-radius:4px;transition:width .6s ease}
+
+    /* ── MODAL ── */
+    .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px}
+    .modal-box{background:#fff;border-radius:var(--rl);width:650px;max-width:100%;max-height:90vh;overflow-y:auto}
+    .modal-hd{padding:20px 24px;border-bottom:1px solid var(--g100);display:flex;align-items:center;justify-content:space-between}
+    .modal-close{background:none;border:none;font-size:22px;cursor:pointer;color:var(--g500);line-height:1}
+    .modal-close:hover{color:var(--g900)}
+    .modal-body{padding:24px}
+    .modal-ft{padding:16px 24px;border-top:1px solid var(--g100);display:flex;justify-content:flex-end;gap:12px}
+
+    /* ── OVERLAY ── */
+    .overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:99;display:none}
+    .overlay.on{display:block}
+
+    /* ── TOAST ── */
+    .toast{position:fixed;bottom:24px;right:24px;z-index:999;pointer-events:none}
+    .toast-inner{padding:14px 20px;border-radius:var(--r);box-shadow:var(--shl);display:flex;align-items:center;gap:12px;font-size:14px;color:#fff;opacity:0;transform:translateY(10px);transition:all .3s ease;max-width:360px}
+    .toast-inner.show{opacity:1;transform:translateY(0)}
+    .toast-ok{background:var(--navy)}
+    .toast-err{background:var(--danger)}
+    .toast-warn{background:var(--warning)}
+
+    /* ── MOBILE ── */
+    .mob-btn{display:none;background:none;border:none;font-size:22px;cursor:pointer;color:var(--navy)}
+    @media(max-width:768px){
+      .sidebar{transform:translateX(-100%)}.sidebar.open{transform:translateX(0)}
+      .main{margin-left:0}.mob-btn{display:block}
+      .auth-brand{display:none}.auth-panel{width:100%;padding:32px 24px}
+      .frow{grid-template-columns:1fr}.sgrid{grid-template-columns:repeat(2,1fr)}
+      .page-wrap{padding:16px}.score-grid{grid-template-columns:1fr}
+      .reg-layout{grid-template-columns:1fr!important}
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .fade-up{animation:fadeUp .3s ease forwards}
+    .spinner{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite}
+    .spinner-d{border-color:rgba(15,36,68,.15);border-top-color:var(--navy)}
+    .empty-row td{text-align:center;color:var(--g500);padding:32px;font-style:italic}
+    .loading-row{text-align:center;color:var(--g500);padding:32px}
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════════════════
+     AUTH SECTION
+══════════════════════════════ -->
+<div id="auth-section" class="auth-wrap">
+  <div class="auth-brand">
+    <div class="brand-logo">MSRC</div>
+    <div class="brand-full">Medical Students Research Conference</div>
+    <div class="brand-desc">Empowering the next generation of medical researchers through collaboration and innovation.</div>
+    <div class="brand-feats">
+      <div class="brand-feat"><span>📄</span> Abstract Submission & Peer Review</div>
+      <div class="brand-feat"><span>🎫</span> Online Registration & Payment</div>
+      <div class="brand-feat"><span>🎓</span> Automated Certificate Generation</div>
+      <div class="brand-feat"><span>📊</span> Real-Time Admin Analytics</div>
+    </div>
+  </div>
+
+  <div class="auth-panel">
+    <!-- LOGIN -->
+    <div id="login-view" class="fade-up">
+      <div class="auth-title">Welcome back</div>
+      <div class="auth-sub">Sign in to your MSRC account</div>
+      <div class="fg">
+        <label class="flbl req">Email Address</label>
+        <input class="fi" id="l-email" type="email" placeholder="your@email.com">
+      </div>
+      <div class="fg">
+        <label class="flbl req">Password</label>
+        <input class="fi" id="l-pass" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px">
+        <label class="cbg" style="margin:0"><input type="checkbox" id="remember"><span class="cblbl">Remember me</span></label>
+        <span class="auth-link" onclick="show('forgot-view')">Forgot password?</span>
+      </div>
+      <button class="btn btn-p btn-fw btn-lg" onclick="doLogin()">Sign In</button>
+      <div style="margin-top:16px;padding:12px;background:var(--g50);border-radius:var(--r);font-size:12px;color:var(--g500);text-align:center">
+        <strong>First time?</strong> <span class="auth-link" onclick="show('register-view')">Create an account</span> to get started.<br>
+        <span style="font-size:11px;color:var(--g300)">Admins: log in with your registered admin account.</span>
+      </div>
+      <div class="auth-foot">No account? <span class="auth-link" onclick="show('register-view')">Register here</span></div>
+      <div class="divider"></div>
+      <div style="text-align:center"><span class="auth-link" style="font-size:12px;" onclick="verifyCertPublic()">🔍 Verify a Certificate</span></div>
+    </div>
+
+    <!-- REGISTER -->
+    <div id="register-view" style="display:none" class="fade-up">
+      <div class="auth-title">Create Account</div>
+      <div class="auth-sub">Join MSRC 2026 Conference</div>
+      <div class="frow">
+        <div class="fg"><label class="flbl req">Full Name</label><input class="fi" id="r-name" placeholder="Ahmad Al-Rashidi"></div>
+        <div class="fg"><label class="flbl req">Phone</label><input class="fi" id="r-phone" placeholder="+966 5X XXX XXXX"></div>
+      </div>
+      <div class="fg"><label class="flbl req">Email Address</label><input class="fi" id="r-email" type="email" placeholder="your@email.com"></div>
+      <div class="frow">
+        <div class="fg"><label class="flbl req">Password</label><input class="fi" id="r-pass" type="password" placeholder="Min. 8 chars"></div>
+        <div class="fg"><label class="flbl req">Confirm Password</label><input class="fi" id="r-conf" type="password" placeholder="Repeat"></div>
+      </div>
+      <div class="frow">
+        <div class="fg">
+          <label class="flbl req">University</label>
+          <select class="fsel" id="r-uni" onchange="toggleUniName()">
+            <option value="">Select...</option>
+            <option value="kau">King Abdulaziz University (KAU)</option>
+            <option value="non_kau">Other University</option>
+          </select>
+        </div>
+        <div class="fg" id="uni-name-grp" style="display:none">
+          <label class="flbl req">University Name</label>
+          <input class="fi" id="r-uni-name" placeholder="Enter name">
+        </div>
+      </div>
+      <div class="frow">
+        <div class="fg">
+          <label class="flbl req">Academic Level</label>
+          <select class="fsel" id="r-level">
+            <option value="">Select...</option>
+            <option value="student">Medical Student</option>
+            <option value="intern">Intern</option>
+            <option value="resident">Resident</option>
+            <option value="fellow">Fellow</option>
+            <option value="consultant">Consultant</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        <div class="fg">
+          <label class="flbl">Gender (Optional)</label>
+          <select class="fsel" id="r-gender">
+            <option value="">Prefer not to say</option>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+          </select>
+        </div>
+      </div>
+      <div class="frow">
+        <div class="fg">
+          <label class="flbl req">Region</label>
+          <select class="fsel" id="r-region">
+            <option value="">Select...</option>
+            <option>Makkah</option><option>Riyadh</option><option>Eastern Province</option>
+            <option>Madinah</option><option>Aseer</option><option>Other</option>
+          </select>
+        </div>
+        <div class="fg">
+          <label class="flbl req">Nationality</label>
+          <select class="fsel" id="r-nationality">
+            <option value="">Select...</option>
+            <option>Saudi</option><option>Other</option>
+          </select>
+        </div>
+      </div>
+      <div class="fg">
+        <div class="cbg"><input type="checkbox" id="r-terms"><label class="cblbl">I agree to the <span class="auth-link">Terms & Conditions</span> and <span class="auth-link">Privacy Policy</span></label></div>
+      </div>
+      <button class="btn btn-p btn-fw btn-lg" onclick="doRegister()">Create Account</button>
+      <div class="auth-foot">Have an account? <span class="auth-link" onclick="show('login-view')">Sign in</span></div>
+    </div>
+
+    <!-- FORGOT PASSWORD -->
+    <div id="forgot-view" style="display:none" class="fade-up">
+      <div class="auth-title">Reset Password</div>
+      <div class="auth-sub">We'll send a reset link to your email</div>
+      <div class="fg"><label class="flbl req">Email Address</label><input class="fi" id="fp-email" type="email" placeholder="your@email.com"></div>
+      <button class="btn btn-p btn-fw" onclick="doForgot()">Send Reset Link</button>
+      <div class="auth-foot"><span class="auth-link" onclick="show('login-view')">← Back to login</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- overlay -->
+<div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+
+<!-- ══════════════════════════════
+     MAIN APP
+══════════════════════════════ -->
+<div id="app" class="app" style="display:none">
+
+  <!-- SIDEBAR -->
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-mark">MSRC</div>
+      <div class="logo-sub">Conference Portal</div>
+    </div>
+    <div class="sidebar-user">
+      <div class="user-info">
+        <div class="avatar" id="sb-av">AM</div>
+        <div>
+          <div class="u-name" id="sb-name">Ahmad</div>
+          <div class="u-role" id="sb-role">Delegate</div>
+        </div>
+      </div>
+    </div>
+    <div class="sidebar-nav">
+      <span class="nav-lbl">Main</span>
+      <div class="nav-item active" onclick="nav('dashboard',this)"><span class="nav-icon">🏠</span>Dashboard</div>
+      <div class="nav-item" onclick="nav('submit',this)"><span class="nav-icon">📝</span>Submit Abstract</div>
+      <div class="nav-item" onclick="nav('my-abstracts',this)"><span class="nav-icon">📄</span>My Abstracts</div>
+      <div class="nav-item" onclick="nav('evaluator-apply',this)"><span class="nav-icon">🔬</span>Apply as Evaluator</div>
+      <div class="nav-item" onclick="nav('register',this)"><span class="nav-icon">🎫</span>Conference Registration</div>
+      <div class="nav-item" onclick="nav('certs',this)"><span class="nav-icon">🎓</span>My Certificates</div>
+      <div class="nav-item" onclick="nav('profile',this)"><span class="nav-icon">👤</span>My Profile</div>
+
+      <div id="eval-nav" style="display:none">
+        <span class="nav-lbl">Evaluator</span>
+        <div class="nav-item" onclick="nav('eval-work',this)"><span class="nav-icon">📋</span>My Assignments<span class="nav-badge" id="eval-cnt">2</span></div>
+      </div>
+
+      <div id="admin-nav" style="display:none">
+        <span class="nav-lbl">Admin Panel</span>
+        <div class="nav-item" onclick="nav('admin-dash',this)"><span class="nav-icon">📊</span>Admin Dashboard</div>
+        <div class="nav-item" onclick="nav('admin-abstracts',this)"><span class="nav-icon">📄</span>Abstracts</div>
+        <div class="nav-item" onclick="nav('admin-evaluators',this)"><span class="nav-icon">🔬</span>Evaluators</div>
+        <div class="nav-item" onclick="nav('admin-registrations',this)"><span class="nav-icon">💳</span>Registrations</div>
+        <div class="nav-item" onclick="nav('admin-users',this)"><span class="nav-icon">👥</span>Users</div>
+        <div class="nav-item" onclick="nav('admin-certs',this)"><span class="nav-icon">🎓</span>Certificates</div>
+      </div>
+    </div>
+    <div class="sidebar-footer">
+      <button class="logout-btn" onclick="doLogout()">← Sign Out</button>
+    </div>
+  </nav>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="topbar">
+      <div style="display:flex;align-items:center;gap:14px">
+        <button class="mob-btn" onclick="toggleSidebar()">☰</button>
+        <div class="topbar-title" id="page-title">Dashboard</div>
+      </div>
+      <div class="topbar-r">
+        <div class="conf-badge">MSRC 2026</div>
+        <div class="avatar" style="width:34px;height:34px;font-size:12px" id="tb-av">AM</div>
+      </div>
+    </div>
+
+    <!-- ═══ DASHBOARD ═══ -->
+    <div class="page active page-wrap" id="page-dashboard">
+      <div class="hero fade-up">
+        <div class="hero-greet">Welcome back</div>
+        <div class="hero-name" id="hero-name">Ahmad Al-Rashidi</div>
+        <div class="hero-conf">Medical Students Research Conference 2026 · King Abdulaziz University</div>
+      </div>
+      <div class="sec-title">Quick Actions</div>
+      <div class="acards">
+        <div class="acard" onclick="nav('submit',null)">
+          <div class="acard-icon">📝</div>
+          <div class="acard-title">Submit Abstract</div>
+          <div class="acard-desc">Submit your research for peer review and presentation</div>
+          <div class="acard-arrow">→</div>
+        </div>
+        <div class="acard" onclick="nav('evaluator-apply',null)">
+          <div class="acard-icon">🔬</div>
+          <div class="acard-title">Apply as Evaluator</div>
+          <div class="acard-desc">Review and score submitted research abstracts</div>
+          <div class="acard-arrow">→</div>
+        </div>
+        <div class="acard" onclick="nav('register',null)">
+          <div class="acard-icon">🎫</div>
+          <div class="acard-title">Register Now</div>
+          <div class="acard-desc">Secure your conference spot — 50 SAR</div>
+          <div class="acard-arrow">→</div>
+        </div>
+        <div class="acard" onclick="nav('certs',null)">
+          <div class="acard-icon">🎓</div>
+          <div class="acard-title">My Certificates</div>
+          <div class="acard-desc">Download your conference certificates</div>
+          <div class="acard-arrow">→</div>
+        </div>
+      </div>
+      <div class="sgrid">
+        <div class="scard"><div class="sicon ic-navy">📄</div><div class="sval">1</div><div class="slbl">Abstracts Submitted</div></div>
+        <div class="scard"><div class="sicon ic-gold">🎫</div><div class="sval">✓</div><div class="slbl">Conference Registered</div></div>
+        <div class="scard"><div class="sicon ic-green">🎓</div><div class="sval">0</div><div class="slbl">Certificates Ready</div></div>
+        <div class="scard"><div class="sicon ic-blue">📊</div><div class="sval">–</div><div class="slbl">Abstract Status</div></div>
+      </div>
+    </div>
+
+    <!-- ═══ SUBMIT ABSTRACT ═══ -->
+    <div class="page page-wrap" id="page-submit">
+      <div class="sec-title">Submit Abstract</div>
+      <div class="card">
+        <div class="card-hd"><span class="card-title">Research Abstract Submission</span><span class="badge b-sub">Submissions Open</span></div>
+        <div class="card-body">
+          <div class="sbanner sb-info">ℹ️ Do not include author names in the abstract text. Maximum 350 words combined across all sections.</div>
+          <div class="frow">
+            <div class="fg">
+              <label class="flbl req">Type of Research</label>
+              <select class="fsel" id="a-type">
+                <option value="">Select...</option>
+                <option value="case_report">Case Report</option>
+                <option value="cross_sectional">Cross-Sectional Study</option>
+                <option value="cohort">Cohort Study</option>
+                <option value="rct">Randomized Controlled Trial (RCT)</option>
+                <option value="systematic_review">Systematic Review / Meta-Analysis</option>
+                <option value="basic_science">Basic Science</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            <div class="fg">
+              <label class="flbl req">Research Specialty</label>
+              <select class="fsel" id="a-specialty">
+                <option value="">Select...</option>
+                <option>Internal Medicine</option><option>Surgery</option><option>Pediatrics</option>
+                <option>Obstetrics & Gynecology</option><option>Psychiatry</option><option>Emergency Medicine</option>
+                <option>Radiology</option><option>Pathology</option><option>Public Health</option><option>Other</option>
+              </select>
+            </div>
+          </div>
+          <div class="fg"><label class="flbl req">Abstract Title</label><input class="fi" id="a-title" placeholder="Full title of your research"></div>
+
+          <div class="fg">
+            <label class="flbl req">Authors</label>
+            <div id="authors-wrap">
+              <div class="author-item first">
+                <span class="first-badge">★ First Author (Presenter)</span>
+                <div class="frow">
+                  <div class="fg" style="margin:0"><input class="fi" placeholder="Full Name *"></div>
+                  <div class="fg" style="margin:0"><input class="fi" type="email" placeholder="Email"></div>
+                </div>
+                <div style="margin-top:8px"><input class="fi" placeholder="University / Institution"></div>
+              </div>
+            </div>
+            <button class="btn btn-o btn-sm" style="margin-top:10px" onclick="addAuthor()">+ Add Co-Author</button>
+          </div>
+
+          <div class="fg"><label class="flbl req">Background</label><textarea class="fta" id="a-bg" oninput="calcWords()" placeholder="Rationale and context for your study..."></textarea></div>
+          <div class="fg"><label class="flbl req">Methods</label><textarea class="fta" id="a-meth" oninput="calcWords()" placeholder="Study design, population, data collection..."></textarea></div>
+          <div class="fg"><label class="flbl req">Results</label><textarea class="fta" id="a-res" oninput="calcWords()" placeholder="Key findings..."></textarea></div>
+          <div class="fg">
+            <label class="flbl req">Conclusion</label>
+            <textarea class="fta" id="a-conc" oninput="calcWords()" placeholder="Main conclusions and implications..."></textarea>
+            <div class="wcount" id="wc">0 / 350 words</div>
+          </div>
+
+          <div class="frow">
+            <div class="fg"><label class="flbl req">Abstract File (PDF only)</label><input class="fi" id="a-file" type="file" accept=".pdf"><div class="fhint">Max 10MB</div></div>
+            <div class="fg"><label class="flbl req">Professional Photo</label><input class="fi" id="a-photo" type="file" accept="image/*"><div class="fhint">For presentation slides</div></div>
+          </div>
+          <div class="fg"><label class="flbl req">IBAN Number</label><input class="fi" id="a-iban" placeholder="SA00 0000 0000 0000 0000 0000"><div class="fhint">For prize transfer if awarded</div></div>
+
+          <div class="fg">
+            <div class="cbg"><input type="checkbox" id="a-coi" onchange="toggleCOI()"><label class="cblbl">I declare a conflict of interest</label></div>
+            <div id="coi-detail" style="display:none;margin-top:10px"><textarea class="fta" id="a-coi-text" placeholder="Describe the conflict..."></textarea></div>
+          </div>
+          <div class="fg">
+            <div class="cbg"><input type="checkbox" id="a-disc"><label class="cblbl">I confirm this abstract contains no author names in the text and the research was conducted ethically.</label></div>
+          </div>
+        </div>
+        <div class="card-ft" style="display:flex;justify-content:flex-end;gap:12px">
+          <button class="btn btn-o" onclick="toast('Draft saved','ok')">Save Draft</button>
+          <button class="btn btn-p" onclick="doSubmitAbstract()">Submit Abstract</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ MY ABSTRACTS ═══ -->
+    <div class="page page-wrap" id="page-my-abstracts">
+      <div class="sec-title">My Abstracts</div>
+      <div class="card">
+        <div class="card-hd"><span class="card-title">Submitted Abstracts</span><button class="btn btn-p btn-sm" onclick="nav('submit',null)">+ New Abstract</button></div>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>Title</th><th>Type</th><th>Specialty</th><th>Submitted</th><th>Status</th><th>Avg Score</th></tr></thead>
+            <tbody id="my-abs-tb">
+              <tr><td colspan="6"><div class="empty"><div class="empty-icon">📄</div><div class="empty-title">No Abstracts Yet</div><div class="empty-desc">Submit your first abstract to get started.</div></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ APPLY AS EVALUATOR ═══ -->
+    <div class="page page-wrap" id="page-evaluator-apply">
+      <div class="sec-title">Apply as Evaluator</div>
+      <div class="card" style="max-width:700px">
+        <div class="card-hd"><span class="card-title">Evaluator Application</span></div>
+        <div class="card-body">
+          <div class="sbanner sb-info">ℹ️ Applications are reviewed by the admin team. You'll be notified of the decision via email.</div>
+          <div class="frow">
+            <div class="fg">
+              <label class="flbl req">Academic Level</label>
+              <select class="fsel" id="ev-level">
+                <option value="">Select...</option>
+                <option>Professor</option><option>Associate Professor</option><option>Assistant Professor</option>
+                <option>Lecturer</option><option>Consultant</option><option>Fellow</option><option>Resident</option><option>MSc</option><option>Other</option>
+              </select>
+            </div>
+            <div class="fg">
+              <label class="flbl req">Specialty</label>
+              <select class="fsel" id="ev-spec">
+                <option value="">Select...</option>
+                <option>Internal Medicine</option><option>Surgery</option><option>Pediatrics</option>
+                <option>Research Methods</option><option>Public Health</option><option>Other</option>
+              </select>
+            </div>
+          </div>
+          <div class="fg"><label class="flbl req">Years of Experience</label><input class="fi" id="ev-yrs" type="number" min="0" placeholder="e.g. 5"></div>
+          <div class="fg"><label class="flbl req">Upload CV (PDF only)</label><input class="fi" id="ev-cv" type="file" accept=".pdf"></div>
+          <div class="fg">
+            <label class="flbl">Previous Reviewing Experience?</label>
+            <select class="fsel" id="ev-prev" onchange="togglePrevExp()">
+              <option value="no">No</option><option value="yes">Yes</option>
+            </select>
+          </div>
+          <div id="prev-exp-box" style="display:none" class="fg">
+            <label class="flbl">Describe your reviewing experience</label>
+            <textarea class="fta" id="ev-prev-det" placeholder="e.g. Reviewed abstracts for XXXX 2026..."></textarea>
+          </div>
+        </div>
+        <div class="card-ft" style="display:flex;justify-content:flex-end"><button class="btn btn-p" onclick="doApplyEval()">Submit Application</button></div>
+      </div>
+    </div>
+
+    <!-- ═══ CONFERENCE REGISTRATION ═══ -->
+    <div class="page page-wrap" id="page-register">
+      <div class="sec-title">Conference Registration</div>
+      <div class="reg-layout" style="display:grid;grid-template-columns:1fr 340px;gap:24px;align-items:start">
+        <div class="card">
+          <div class="card-hd"><span class="card-title">Your Details</span></div>
+          <div class="card-body">
+            <div class="frow">
+              <div class="fg"><label class="flbl">Full Name</label><input class="fi" id="rc-name" readonly></div>
+              <div class="fg"><label class="flbl">Email</label><input class="fi" id="rc-email" readonly></div>
+            </div>
+            <div class="frow">
+              <div class="fg"><label class="flbl req">Phone</label><input class="fi" id="rc-phone" placeholder="+966 5X XXX XXXX"></div>
+              <div class="fg"><label class="flbl req">ID Number (for Certificate)</label><input class="fi" id="rc-id" placeholder="National ID / Iqama"></div>
+            </div>
+            <div class="frow">
+              <div class="fg"><label class="flbl">University</label><input class="fi" id="rc-uni" readonly></div>
+              <div class="fg"><label class="flbl">Academic Level</label><input class="fi" id="rc-level" readonly></div>
+            </div>
+            <div class="divider"></div>
+            <div class="fg">
+              <div class="cbg">
+                <input type="checkbox" id="wk-check" onchange="calcPrice()">
+                <label class="cblbl">
+                  <strong>Add Workshop (+50 SAR)</strong><br>
+                  <span style="font-size:12px;color:var(--g500)">Hands-on research skills workshop on the conference day</span>
+                </label>
+              </div>
+            </div>
+            <div class="fg">
+              <label class="flbl">Discount Code</label>
+              <div style="display:flex;gap:10px">
+                <input class="fi" id="disc-code" placeholder="e.g. KAU50" style="text-transform:uppercase">
+                <button class="btn btn-o" onclick="applyCode()">Apply</button>
+              </div>
+              <div id="disc-msg" class="fhint"></div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="card">
+            <div class="card-hd"><span class="card-title">Order Summary</span></div>
+            <div class="card-body">
+              <div class="price-box">
+                <div class="prow"><span>Conference Attendance</span><span id="p-conf">50 SAR</span></div>
+                <div class="prow" id="p-wk-row" style="display:none"><span>Workshop</span><span>50 SAR</span></div>
+                <div class="prow disc" id="p-disc-row" style="display:none"><span>Discount (KAU50)</span><span id="p-disc-amt">-50 SAR</span></div>
+                <div class="pdiv"></div>
+                <div class="ptotal"><span>Total</span><span id="p-total">50 SAR</span></div>
+              </div>
+              <div style="margin-top:16px;font-size:12px;color:var(--g500);line-height:1.8">
+                💳 Secure payment via Moyasar<br>🔒 Encrypted & secure
+              </div>
+            </div>
+            <div class="card-ft">
+              <button class="btn btn-g btn-fw btn-lg" onclick="doPayment()">Proceed to Payment →</button>
+            </div>
+          </div>
+          <div class="card" style="margin-top:14px">
+            <div class="card-body" style="padding:16px 20px;font-size:12px;color:var(--g500);line-height:1.9">
+              <div style="font-weight:600;color:var(--navy);margin-bottom:6px">What's Included:</div>
+              ✓ Full day conference access<br>✓ Attendance certificate<br>✓ Lunch & refreshments<br>✓ Conference materials
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ CERTIFICATES ═══ -->
+    <div class="page page-wrap" id="page-certs">
+      <div class="sec-title">My Certificates</div>
+      <div id="certs-wrap">
+        <div class="empty"><div class="empty-icon">🎓</div><div class="empty-title">No Certificates Yet</div><div class="empty-desc">Certificates are generated after the conference concludes.</div></div>
+      </div>
+      <div class="divider"></div>
+      <div class="sec-title" style="font-size:17px">Verify a Certificate</div>
+      <div class="card" style="max-width:500px">
+        <div class="card-body">
+          <div class="fg">
+            <label class="flbl">Certificate ID</label>
+            <div style="display:flex;gap:10px">
+              <input class="fi" id="v-uid" placeholder="e.g. MSRC-2026-AB1234" onkeydown="if(event.key==='Enter')doVerify()">
+              <button class="btn btn-p" onclick="doVerify()">Verify</button>
+            </div>
+          </div>
+          <div id="v-result"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ PROFILE ═══ -->
+    <div class="page page-wrap" id="page-profile">
+      <div class="sec-title">My Profile</div>
+      <div class="card" style="max-width:680px">
+        <div class="card-hd"><span class="card-title">Personal Information</span><button class="btn btn-o btn-sm" onclick="toast('Profile edit enabled','ok')">Edit</button></div>
+        <div class="card-body">
+          <div class="frow">
+            <div class="fg"><label class="flbl">Full Name</label><input class="fi" id="prof-name" readonly></div>
+            <div class="fg"><label class="flbl">Email</label><input class="fi" id="prof-email" readonly></div>
+          </div>
+          <div class="frow">
+            <div class="fg"><label class="flbl">Phone</label><input class="fi" id="prof-phone" readonly></div>
+            <div class="fg"><label class="flbl">University</label><input class="fi" id="prof-uni" readonly></div>
+          </div>
+          <div class="frow">
+            <div class="fg"><label class="flbl">Academic Level</label><input class="fi" id="prof-level" readonly></div>
+            <div class="fg"><label class="flbl">Region</label><input class="fi" id="prof-region" readonly></div>
+          </div>
+        </div>
+        <div class="card-ft"><button class="btn btn-o btn-sm" onclick="toast('Password change modal','ok')">Change Password</button></div>
+      </div>
+    </div>
+
+    <!-- ═══ EVALUATOR WORK ═══ -->
+    <div class="page page-wrap" id="page-eval-work">
+      <div class="sec-title">My Assignments</div>
+      <div class="card">
+        <div class="card-hd"><span class="card-title">Abstracts to Review</span><span class="badge b-pend">2 Pending</span></div>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>Title</th><th>Type</th><th>Specialty</th><th>Due</th><th>Status</th><th>Action</th></tr></thead>
+            <tbody id="eval-work-tb"><tr><td colspan="6" class="empty-row">Loading assignments...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ ADMIN DASHBOARD ═══ -->
+    <div class="page page-wrap" id="page-admin-dash">
+      <div class="sec-title">Admin Dashboard</div>
+      <div class="sgrid" style="grid-template-columns:repeat(auto-fit,minmax(150px,1fr))">
+        <div class="scard"><div class="sicon ic-navy">👥</div><div class="sval" id="stat-users">248</div><div class="slbl">Total Users</div></div>
+        <div class="scard"><div class="sicon ic-gold">📄</div><div class="sval" id="stat-abstracts">67</div><div class="slbl">Abstracts</div></div>
+        <div class="scard"><div class="sicon ic-blue">🎫</div><div class="sval" id="stat-regs">182</div><div class="slbl">Registrations</div></div>
+        <div class="scard"><div class="sicon ic-green">💰</div><div class="sval" id="stat-rev" style="font-size:22px">9,100</div><div class="slbl">Revenue (SAR)</div></div>
+        <div class="scard"><div class="sicon ic-blue">🔬</div><div class="sval" id="stat-evals">24</div><div class="slbl">Evaluators</div></div>
+        <div class="scard"><div class="sicon ic-green">✅</div><div class="sval" id="stat-acc">31</div><div class="slbl">Accepted</div></div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px">
+        <div class="card">
+          <div class="card-hd"><span class="card-title">Abstract Breakdown</span></div>
+          <div class="card-body">
+            <div class="cbar-row"><div class="cbar-meta"><span>Under Review</span><span>24</span></div><div class="cbar-track"><div class="cbar-fill" style="width:36%;background:var(--warning)"></div></div></div>
+            <div class="cbar-row"><div class="cbar-meta"><span>Accepted (Oral)</span><span>11</span></div><div class="cbar-track"><div class="cbar-fill" style="width:16%;background:var(--oral)"></div></div></div>
+            <div class="cbar-row"><div class="cbar-meta"><span>Accepted (Poster)</span><span>20</span></div><div class="cbar-track"><div class="cbar-fill" style="width:30%;background:var(--poster)"></div></div></div>
+            <div class="cbar-row"><div class="cbar-meta"><span>Rejected</span><span>8</span></div><div class="cbar-track"><div class="cbar-fill" style="width:12%;background:var(--danger)"></div></div></div>
+            <div class="cbar-row"><div class="cbar-meta"><span>Needs Revision</span><span>4</span></div><div class="cbar-track"><div class="cbar-fill" style="width:6%;background:#b45309"></div></div></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-hd"><span class="card-title">Discount Code Usage</span></div>
+          <div class="card-body">
+            <table><thead><tr><th>Code</th><th>Uses</th><th>Revenue Impact</th><th>Status</th></tr></thead>
+            <tbody><tr><td><strong>KAU50</strong></td><td>45</td><td style="color:var(--danger)">-2,250 SAR</td><td><span class="badge b-accept">Active</span></td></tr></tbody></table>
+            <div style="margin-top:14px;padding:12px;background:var(--gold-pale);border-radius:var(--r);font-size:13px">
+              <strong>Workshop Revenue:</strong> 38 × 50 SAR = <strong>1,900 SAR</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-hd"><span class="card-title">Quick Actions</span></div>
+        <div class="card-body" style="display:flex;gap:12px;flex-wrap:wrap">
+          <button class="btn btn-p" onclick="nav('admin-abstracts',null)">📄 Manage Abstracts</button>
+          <button class="btn btn-o" onclick="nav('admin-evaluators',null)">🔬 Evaluator Applications</button>
+          <button class="btn btn-g" onclick="doBulkCerts()">🎓 Bulk Generate Certificates</button>
+          <button class="btn btn-o" onclick="exportCSV('registrations')">📥 Export Registrations</button>
+          <button class="btn btn-o" onclick="exportCSV('abstracts')">📥 Export Abstracts</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ ADMIN ABSTRACTS ═══ -->
+    <div class="page page-wrap" id="page-admin-abstracts">
+      <div class="sec-title">Abstract Management</div>
+      <div class="card">
+        <div class="card-hd">
+          <span class="card-title">All Abstracts (<span id="abs-count">—</span>)</span>
+          <button class="btn btn-o btn-sm" onclick="exportCSV('abstracts')">📥 Export CSV</button>
+        </div>
+        <div class="card-body" style="padding:16px">
+          <div class="fbar">
+            <input class="fi" placeholder="Search title or presenter..." style="flex:1;min-width:180px">
+            <select class="fsel" style="width:auto">
+              <option>All Statuses</option><option>Submitted</option><option>Under Review</option>
+              <option>Accepted (Oral)</option><option>Accepted (Poster)</option><option>Rejected</option><option>Needs Revision</option>
+            </select>
+            <select class="fsel" style="width:auto">
+              <option>All Types</option><option>Case Report</option><option>Cross-Sectional</option><option>Cohort</option><option>RCT</option>
+            </select>
+          </div>
+        </div>
+        <div class="tbl-wrap">
+          <table data-sort-dir="desc">
+            <thead class="admin-thead">
+              <tr>
+                <th class="sortable" onclick="sortTable('#page-admin-abstracts table', 0, false)">Title ↕</th>
+                <th class="sortable" onclick="sortTable('#page-admin-abstracts table', 1, false)">Presenter ↕</th>
+                <th class="sortable" onclick="sortTable('#page-admin-abstracts table', 2, false)">Type ↕</th>
+                <th class="sortable" onclick="sortTable('#page-admin-abstracts table', 3, false)">Specialty ↕</th>
+                <th class="sortable" onclick="sortTable('#page-admin-abstracts table', 4, true)">Score ↕</th>
+                <th class="sortable" onclick="sortTable('#page-admin-abstracts table', 5, false)">Status ↕</th>
+                <th>Update Status</th>
+              </tr>
+            </thead>
+            <tbody id="admin-abs-tb"><tr><td colspan="7" class="empty-row">Loading abstracts...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ ADMIN EVALUATORS ═══ -->
+    <div class="page page-wrap" id="page-admin-evaluators">
+      <div class="sec-title">Evaluator Management</div>
+      <div class="card">
+        <div class="card-hd"><span class="card-title">Applications</span><span class="badge b-pend">5 Pending</span></div>
+        <div class="tbl-wrap">
+          <table>
+            <thead class="admin-thead"><tr><th>Name</th><th>Specialty</th><th>Level</th><th>Exp.</th><th>Applied</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody id="admin-eval-tb"><tr><td colspan="7" class="empty-row">Loading evaluator applications...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ ADMIN REGISTRATIONS ═══ -->
+    <div class="page page-wrap" id="page-admin-registrations">
+      <div class="sec-title">Registrations & Payments</div>
+      <div class="sgrid" style="grid-template-columns:repeat(4,1fr)">
+        <div class="scard"><div class="sval">182</div><div class="slbl">Total Registered</div></div>
+        <div class="scard"><div class="sval" style="color:var(--success)">9,100</div><div class="slbl">Revenue (SAR)</div></div>
+        <div class="scard"><div class="sval">38</div><div class="slbl">With Workshop</div></div>
+        <div class="scard"><div class="sval">45</div><div class="slbl">KAU50 Used</div></div>
+      </div>
+      <div class="card">
+        <div class="card-hd">
+          <span class="card-title">All Registrations</span>
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-p btn-sm" onclick="openOnsiteModal()">+ Add Onsite</button>
+            <button class="btn btn-o btn-sm" onclick="exportCSV('registrations')">📥 Export</button>
+          </div>
+        </div>
+        <div class="tbl-wrap">
+          <table>
+            <thead class="admin-thead"><tr><th>Name</th><th>Email</th><th>University</th><th>Workshop</th><th>Amount</th><th>Source</th><th>Payment</th></tr></thead>
+            <tbody>
+              <!-- Loaded dynamically via loadAdminRegistrations() -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ ADMIN USERS ═══ -->
+    <div class="page page-wrap" id="page-admin-users">
+      <div class="sec-title">User Management</div>
+      <div class="card">
+        <div class="card-hd"><span class="card-title">All Users (<span id="users-count">—</span>)</span></div>
+        <div class="card-body" style="padding:16px">
+          <div class="fbar">
+            <input class="fi" placeholder="Search name or email..." style="flex:1">
+            <select class="fsel" style="width:auto"><option>All Roles</option><option>Delegate</option><option>Presenter</option><option>Evaluator</option><option>Admin</option></select>
+          </div>
+        </div>
+        <div class="tbl-wrap">
+          <table>
+            <thead class="admin-thead"><tr><th>Name</th><th>Email</th><th>University</th><th>Level</th><th>Roles</th><th>Verified</th><th>Actions</th></tr></thead>
+            <tbody id="admin-users-tb"><tr><td colspan="7" class="empty-row">Loading users...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ ADMIN CERTIFICATES ═══ -->
+    <div class="page page-wrap" id="page-admin-certs">
+      <div class="sec-title">Certificate Management</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:24px">
+        <div class="card">
+          <div class="card-hd"><span class="card-title">Bulk Operations</span></div>
+          <div class="card-body">
+            <p style="font-size:14px;color:var(--g500);margin-bottom:16px">Generate certificates for all eligible attendees, evaluators, and presenters at once.</p>
+            <button class="btn btn-p btn-fw" onclick="doBulkCerts()">🎓 Bulk Generate All Certificates</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-hd"><span class="card-title">Issue Single Certificate</span></div>
+          <div class="card-body">
+            <div class="fg"><label class="flbl">User Email or ID</label><input class="fi" id="mc-user" placeholder="Email or user ID"></div>
+            <div class="fg">
+              <label class="flbl">Certificate Type</label>
+              <select class="fsel" id="mc-type">
+                <option value="attendance">Attendance Certificate</option>
+                <option value="appreciation">Appreciation (Evaluator)</option>
+                <option value="presentation">Presentation Certificate</option>
+              </select>
+            </div>
+            <button class="btn btn-g btn-fw" onclick="doIssueCert()">Issue Certificate</button>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hd"><span class="card-title">Certificate Log</span></div>
+        <div class="tbl-wrap">
+          <table>
+            <thead class="admin-thead"><tr><th>Certificate ID</th><th>Recipient</th><th>Type</th><th>Issued</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody>
+              <tr>
+                <td><code>MSRC-2026-AB4X9K</code></td><td>Ahmad Al-Rashidi</td><td>Attendance</td><td>Feb 1, 2026</td>
+                <td><span class="badge b-paid">Valid</span></td>
+                <td style="white-space:nowrap">
+                  <button class="btn btn-o btn-sm" onclick="toast('Downloading certificate PDF...','ok')">Download</button>
+                  <button class="btn btn-p btn-sm" onclick="toast('Certificate regenerated','ok')">Regenerate</button>
+                </td>
+              </tr>
+              <tr>
+                <td><code>MSRC-2026-ZY7W2M</code></td><td>Noura Al-Ghamdi</td><td>Appreciation</td><td>Feb 1, 2026</td>
+                <td><span class="badge b-paid">Valid</span></td>
+                <td style="white-space:nowrap">
+                  <button class="btn btn-o btn-sm" onclick="toast('Downloading...','ok')">Download</button>
+                  <button class="btn btn-p btn-sm" onclick="toast('Regenerated','ok')">Regenerate</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /main -->
+</div><!-- /app -->
+
+<!-- ══════════════════════════════
+     MODALS
+══════════════════════════════ -->
+
+<!-- Evaluate Abstract Modal (UPDATED FOR FULL ABSTRACT VIEW) -->
+<div class="modal-bg" id="eval-modal" style="display:none">
+  <div class="modal-box">
+    <div class="modal-hd">
+      <span class="card-title">Submit Evaluation</span>
+      <button class="modal-close" onclick="closeModal('eval-modal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="sbanner sb-info" style="margin-bottom:16px">Score each criterion 1–10 (10 = excellent). All fields required.</div>
+      
+      <!-- Abstract Details -->
+      <div style="background:var(--g50);border-radius:var(--r);padding:16px;margin-bottom:20px;font-size:13px;color:var(--g700)">
+        <h3 style="color:var(--navy); margin-bottom: 8px;" id="eval-title">Prevalence of Metabolic Syndrome in Medical Students</h3>
+        <p><strong>Type:</strong> Cross-Sectional · <strong>Specialty:</strong> Internal Medicine</p>
+        <hr style="border:0; border-top:1px solid var(--g100); margin: 12px 0;">
+        <p style="margin-bottom: 8px;"><strong>Background:</strong> <span id="eval-bg">Metabolic syndrome is increasingly prevalent among young adults. This study aims to determine its prevalence and associated risk factors among medical students, who often face high stress and irregular schedules.</span></p>
+        <p style="margin-bottom: 8px;"><strong>Methods:</strong> <span id="eval-meth">A cross-sectional study was conducted among 500 medical students. Data on anthropometric measurements, blood pressure, fasting glucose, and lipid profiles were collected. The IDF criteria were used for diagnosis.</span></p>
+        <p style="margin-bottom: 8px;"><strong>Results:</strong> <span id="eval-res">The overall prevalence of metabolic syndrome was found to be 12.4%. It was significantly higher in males (15.2%) compared to females (9.8%). Low HDL cholesterol was the most common abnormality observed (34%).</span></p>
+        <p><strong>Conclusion:</strong> <span id="eval-conc">A concerning proportion of medical students suffer from metabolic syndrome. Early screening and targeted lifestyle interventions are highly recommended to prevent future cardiovascular complications in this population.</span></p>
+      </div>
+
+      <div class="score-grid">
+        <div class="score-f"><label>Originality (1–10)</label><input type="number" id="sc-orig" min="1" max="10" placeholder="—"></div>
+        <div class="score-f"><label>Methodology (1–10)</label><input type="number" id="sc-meth" min="1" max="10" placeholder="—"></div>
+        <div class="score-f"><label>Clarity (1–10)</label><input type="number" id="sc-clar" min="1" max="10" placeholder="—"></div>
+        <div class="score-f"><label>Relevance (1–10)</label><input type="number" id="sc-rel" min="1" max="10" placeholder="—"></div>
+      </div>
+      <div style="background:var(--g50);border-radius:var(--r);padding:12px 16px;margin-bottom:20px;font-size:13px;text-align:center">
+        Average Score: <strong id="avg-score" style="font-size:18px;color:var(--navy)">—</strong>
+      </div>
+      <div class="fg">
+        <label class="flbl req">Recommendation</label>
+        <select class="fsel" id="sc-rec">
+          <option value="accept_oral">Accept - Recommended Oral</option>
+          <option value="accept_poster">Accept - Recommended Poster</option>
+          <option value="revise">Needs Revision</option>
+          <option value="reject">Reject</option>
+        </select>
+      </div>
+      <div class="fg">
+        <label class="flbl">Comments for Presenter (optional)</label>
+        <textarea class="fta" id="sc-comm" placeholder="Feedback to help the presenter improve..."></textarea>
+      </div>
+    </div>
+    <div class="modal-ft">
+      <button class="btn btn-o" onclick="closeModal('eval-modal')">Cancel</button>
+      <button class="btn btn-p" onclick="doSubmitEval()">Submit Evaluation</button>
+    </div>
+  </div>
+</div>
+
+<!-- Onsite Registration Modal -->
+<div class="modal-bg" id="onsite-modal" style="display:none">
+  <div class="modal-box">
+    <div class="modal-hd">
+      <span class="card-title">Add Onsite Registration</span>
+      <button class="modal-close" onclick="closeModal('onsite-modal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="sbanner sb-warn">⚠ This will mark the registration as Paid Onsite and automatically generate an attendance certificate.</div>
+      <div class="fg"><label class="flbl req">Search User (Email or Name)</label><input class="fi" id="os-user" placeholder="Search registered user..."></div>
+      <div class="fg">
+        <div class="cbg"><input type="checkbox" id="os-wk"><label class="cblbl"><strong>Include Workshop (+50 SAR)</strong></label></div>
+      </div>
+      <div class="fg"><label class="flbl">Notes</label><textarea class="fta" id="os-notes" placeholder="Optional notes..." style="min-height:70px"></textarea></div>
+    </div>
+    <div class="modal-ft">
+      <button class="btn btn-o" onclick="closeModal('onsite-modal')">Cancel</button>
+      <button class="btn btn-p" onclick="doOnsiteReg()">Add Registration</button>
+    </div>
+  </div>
+</div>
+
+<!-- Assign Abstracts Modal (UPDATED FOR TRACKING) -->
+<div class="modal-bg" id="assign-modal" style="display:none">
+  <div class="modal-box">
+    <div class="modal-hd">
+      <span class="card-title">Assign Abstracts to Evaluator</span>
+      <button class="modal-close" onclick="closeModal('assign-modal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div style="font-size:13px;color:var(--g500);margin-bottom:16px">Evaluator: <strong>Prof. Omar Al-Yami</strong> · Surgery</div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th><input type="checkbox" onclick="toggleAll(this)"></th><th>Title</th><th>Type</th><th>Assignment Status</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><input type="checkbox"></td>
+              <td>Antibiotic Resistance Patterns in Pediatric UTIs</td>
+              <td>Cohort</td>
+              <td><span class="badge b-draft">Unassigned</span></td>
+            </tr>
+            <tr style="opacity: 0.6;">
+              <td><input type="checkbox" disabled title="Already Assigned"></td>
+              <td>Post-Op Pain Management in Abdominal Surgery</td>
+              <td>RCT</td>
+              <td><span class="badge b-info">Assigned to: Dr. Noura</span></td>
+            </tr>
+            <tr>
+              <td><input type="checkbox"></td>
+              <td>Laparoscopic vs Open Cholecystectomy Outcomes</td>
+              <td>Cohort</td>
+              <td><span class="badge b-draft">Unassigned</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="modal-ft">
+      <button class="btn btn-o" onclick="closeModal('assign-modal')">Cancel</button>
+      <button class="btn btn-p" onclick="doAssign()">Assign Selected</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast">
+  <div class="toast-inner" id="toast-inner">
+    <span id="toast-icon">✓</span>
+    <span id="toast-msg"></span>
+  </div>
+</div>
+
+
+<!-- Public Certificate Verify Modal -->
+<div class="modal-bg" id="verify-pub-modal" style="display:none">
+  <div class="modal-box" style="max-width:480px">
+    <div class="modal-hd">
+      <span class="card-title">🔍 Verify Certificate</span>
+      <button class="modal-close" onclick="closeModal('verify-pub-modal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:13px;color:var(--g500);margin-bottom:16px">Enter the certificate code printed on your certificate to verify its authenticity.</p>
+      <div class="form-grp">
+        <label class="form-label">Certificate Code</label>
+        <input class="form-inp" id="verify-pub-code" placeholder="e.g. CERT-2026-XXXX" style="font-family:monospace;letter-spacing:1px">
+      </div>
+      <div id="verify-pub-result" style="display:none;margin-top:16px;padding:16px;border-radius:10px;font-size:13px"></div>
+    </div>
+    <div class="modal-ft">
+      <button class="btn btn-o" onclick="closeModal('verify-pub-modal')">Close</button>
+      <button class="btn btn-p" id="verify-pub-btn" onclick="verifyPublicCert()">Verify</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════════════════
+// MSRC 2026 – Frontend Configuration
+// Replace API_URL with your deployed Google Apps Script Web App URL
+// ═══════════════════════════════════════════════════════════════════════════
+const API_URL = 'YOUR_APPS_SCRIPT_DEPLOYMENT_URL_HERE';
+// Example: 'https://script.google.com/macros/s/AKfycby.../exec'
+
+// ── STATE ────────────────────────────────────────────────────────────────────
+let CU        = null;   // current user object
+let TOKEN     = null;   // session token
+let discount  = null;   // applied discount
+let toastTimer = null;
+let currentEvalAbstract = null; // abstract being evaluated
+let currentAssignEvalId = null; // evaluator being assigned to
+
+// ── API HELPERS ───────────────────────────────────────────────────────────────
+
+async function api(action, body = {}) {
+  const token = TOKEN || localStorage.getItem('msrc_token') || '';
+  try {
+    const res = await fetch(API_URL, {
+      method: 'POST',
+      body: JSON.stringify({ action, token, ...body })
+    });
+    return await res.json();
+  } catch (e) {
+    return { ok: false, error: 'Network error – check your connection.' };
+  }
+}
+
+async function apiGet(params = {}) {
+  const token = TOKEN || localStorage.getItem('msrc_token') || '';
+  try {
+    const url = new URL(API_URL);
+    Object.entries({ token, ...params }).forEach(([k, v]) => url.searchParams.set(k, v));
+    const res = await fetch(url.toString());
+    return await res.json();
+  } catch (e) {
+    return { ok: false, error: 'Network error – check your connection.' };
+  }
+}
+
+function setLoading(btn, loading) {
+  if (!btn) return;
+  if (loading) {
+    btn.disabled = true;
+    btn._origHTML = btn.innerHTML;
+    btn.innerHTML = '<span class="spinner"></span> Loading…';
+  } else {
+    btn.disabled = false;
+    btn.innerHTML = btn._origHTML || btn.innerHTML;
+  }
+}
+
+// ── SHOW/HIDE AUTH SUBVIEWS ───────────────────────────────────────────────────
+
+function show(id) {
+  ['login-view', 'register-view', 'forgot-view', 'reset-view'].forEach(v => {
+    const el = document.getElementById(v);
+    if (el) el.style.display = (v === id) ? 'block' : 'none';
+  });
+}
+
+// ── NAVIGATION ───────────────────────────────────────────────────────────────
+
+const pageTitles = {
+  dashboard:              'Dashboard',
+  submit:                 'Submit Abstract',
+  'my-abstracts':         'My Abstracts',
+  'evaluator-apply':      'Apply as Evaluator',
+  register:               'Conference Registration',
+  certs:                  'My Certificates',
+  profile:                'My Profile',
+  'eval-work':            'My Assignments',
+  'admin-dash':           'Admin Dashboard',
+  'admin-abstracts':      'Abstract Management',
+  'admin-evaluators':     'Evaluator Management',
+  'admin-registrations':  'Registrations & Payments',
+  'admin-users':          'User Management',
+  'admin-certs':          'Certificate Management'
+};
+
+function nav(id, el) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const pg = document.getElementById('page-' + id);
+  if (pg) pg.classList.add('active');
+  if (el) el.classList.add('active');
+  document.getElementById('page-title').textContent = pageTitles[id] || id;
+  closeSidebar();
+  window.scrollTo(0, 0);
+
+  // Load data for pages that need it
+  const loaders = {
+    'my-abstracts':         loadMyAbstracts,
+    'eval-work':            loadEvalWork,
+    certs:                  loadMyCerts,
+    'evaluator-apply':      loadEvalApplicationStatus,
+    'admin-dash':           loadAdminStats,
+    'admin-abstracts':      loadAdminAbstracts,
+    'admin-evaluators':     loadAdminEvalApps,
+    'admin-registrations':  loadAdminRegistrations,
+    'admin-users':          loadAdminUsers,
+    'admin-certs':          loadAdminCerts,
+    profile:                fillProfile
+  };
+  if (loaders[id]) loaders[id]();
+}
+
+// ── SIDEBAR ───────────────────────────────────────────────────────────────────
+
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('overlay').classList.toggle('on');
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('overlay').classList.remove('on');
+}
+
+// ── AUTH ─────────────────────────────────────────────────────────────────────
+
+async function doLogin() {
+  const email = document.getElementById('l-email').value.trim();
+  const pass  = document.getElementById('l-pass').value;
+  if (!email || !pass) { toast('Please enter email and password', 'err'); return; }
+
+  const btn = document.querySelector('#login-view .btn-p');
+  setLoading(btn, true);
+  const data = await api('login', { email, password: pass });
+  setLoading(btn, false);
+
+  if (!data.ok) { toast(data.error || 'Login failed', 'err'); return; }
+
+  TOKEN = data.token;
+  localStorage.setItem('msrc_token', TOKEN);
+  if (document.getElementById('remember').checked) {
+    localStorage.setItem('msrc_remember', '1');
+  }
+
+  CU = data.user;
+  initApp();
+  toast('Welcome back, ' + CU.full_name.split(' ')[0] + '!', 'ok');
+}
+
+async function doRegister() {
+  const name        = document.getElementById('r-name').value.trim();
+  const phone       = document.getElementById('r-phone').value.trim();
+  const email       = document.getElementById('r-email').value.trim();
+  const pass        = document.getElementById('r-pass').value;
+  const conf        = document.getElementById('r-conf').value;
+  const university  = document.getElementById('r-uni').value;
+  const uniName     = document.getElementById('r-uni-name')?.value.trim();
+  const level       = document.getElementById('r-level').value;
+  const region      = document.getElementById('r-region').value;
+  const nationality = document.getElementById('r-nationality').value;
+  const gender      = document.getElementById('r-gender').value;
+  const terms       = document.getElementById('r-terms').checked;
+
+  if (!name || !email || !pass || !phone || !university || !level || !region || !nationality)
+    { toast('Please fill all required fields', 'err'); return; }
+  if (university === 'non_kau' && !uniName)
+    { toast('Please enter your university name', 'err'); return; }
+  if (pass.length < 8) { toast('Password must be at least 8 characters', 'err'); return; }
+  if (pass !== conf)   { toast('Passwords do not match', 'err'); return; }
+  if (!terms)          { toast('Please agree to the Terms & Conditions', 'err'); return; }
+
+  const btn = document.querySelector('#register-view .btn-p');
+  setLoading(btn, true);
+  const data = await api('register', {
+    full_name: name, email, password: pass, phone, university,
+    university_name: uniName, academic_level: level, region, nationality, gender
+  });
+  setLoading(btn, false);
+
+  if (!data.ok) { toast(data.error || 'Registration failed', 'err'); return; }
+  toast('Account created! Please sign in.', 'ok');
+  setTimeout(() => show('login-view'), 2000);
+}
+
+async function doForgot() {
+  const email = document.getElementById('fp-email').value.trim();
+  if (!email) { toast('Please enter your email address', 'err'); return; }
+
+  const btn = document.querySelector('#forgot-view .btn-p');
+  setLoading(btn, true);
+  const data = await api('forgot_password', { email });
+  setLoading(btn, false);
+
+  toast(data.message || 'Reset link sent if that email exists.', 'ok');
+}
+
+// Handles reset_token in URL on page load
+async function checkResetToken() {
+  const params = new URLSearchParams(window.location.search);
+  const token  = params.get('reset_token');
+  if (!token) return;
+
+  // Show a reset password form
+  const panel = document.querySelector('.auth-panel');
+  panel.innerHTML = `
+    <div id="reset-view" class="fade-up">
+      <div class="auth-title">Set New Password</div>
+      <div class="auth-sub">Enter your new password below</div>
+      <div class="fg"><label class="flbl req">New Password</label><input class="fi" id="rp-pass" type="password" placeholder="Min. 8 characters"></div>
+      <div class="fg"><label class="flbl req">Confirm New Password</label><input class="fi" id="rp-conf" type="password" placeholder="Repeat"></div>
+      <button class="btn btn-p btn-fw btn-lg" onclick="doResetPassword('${token}')">Set Password</button>
+      <div class="auth-foot"><span class="auth-link" onclick="window.location.href=window.location.pathname">← Back to Login</span></div>
+    </div>`;
+}
+
+async function doResetPassword(resetToken) {
+  const pass = document.getElementById('rp-pass').value;
+  const conf = document.getElementById('rp-conf').value;
+  if (!pass)          { toast('Please enter a new password', 'err'); return; }
+  if (pass.length < 8){ toast('Password must be at least 8 characters', 'err'); return; }
+  if (pass !== conf)  { toast('Passwords do not match', 'err'); return; }
+
+  const btn = document.querySelector('#reset-view .btn-p');
+  setLoading(btn, true);
+  const data = await api('reset_password', { reset_token: resetToken, new_password: pass });
+  setLoading(btn, false);
+
+  if (!data.ok) { toast(data.error || 'Reset failed', 'err'); return; }
+  toast('Password reset! Please sign in.', 'ok');
+  setTimeout(() => { window.location.href = window.location.pathname; }, 2000);
+}
+
+function initApp() {
+  document.getElementById('auth-section').style.display = 'none';
+  document.getElementById('app').style.display         = 'flex';
+
+  const initials = CU.full_name.split(' ').slice(0, 2).map(n => n[0]).join('').toUpperCase();
+  ['sb-av', 'tb-av'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = initials;
+  });
+  document.getElementById('sb-name').textContent = CU.full_name.split(' ')[0];
+  if (document.getElementById('hero-name')) document.getElementById('hero-name').textContent = CU.full_name;
+
+  const roles = String(CU.roles || '').split(',').map(r => r.trim());
+  const roleLabel =
+    roles.includes('super_admin') ? 'Super Admin' :
+    roles.includes('admin')       ? 'Admin' :
+    roles.includes('evaluator')   ? 'Evaluator' :
+    roles.includes('presenter')   ? 'Presenter' : 'Delegate';
+  document.getElementById('sb-role').textContent = roleLabel;
+
+  const isAdmin = roles.includes('admin') || roles.includes('super_admin');
+  const isEval  = roles.includes('evaluator');
+
+  document.getElementById('admin-nav').style.display = isAdmin ? 'block' : 'none';
+  document.getElementById('eval-nav').style.display  = isEval  ? 'block' : 'none';
+
+  // If evaluator-apply nav item should be hidden for existing evaluators
+  if (isEval) {
+    const applyNav = Array.from(document.querySelectorAll('.nav-item'))
+      .find(el => el.textContent.includes('Apply as Evaluator'));
+    if (applyNav) applyNav.style.display = 'none';
+  }
+
+  fillProfile();
+  nav('dashboard', document.querySelector('.nav-item.active') || document.querySelector('.nav-item'));
+}
+
+async function doLogout() {
+  if (TOKEN) await api('logout');
+  TOKEN = null;
+  CU    = null;
+  discount = null;
+  localStorage.removeItem('msrc_token');
+  document.getElementById('app').style.display          = 'none';
+  document.getElementById('auth-section').style.display = 'flex';
+  document.getElementById('admin-nav').style.display    = 'none';
+  document.getElementById('eval-nav').style.display     = 'none';
+  show('login-view');
+  toast('Signed out successfully', 'ok');
+}
+
+// Auto-login from stored token on page load
+async function tryAutoLogin() {
+  const stored = localStorage.getItem('msrc_token');
+  if (!stored) return;
+  TOKEN = stored;
+  const data = await apiGet({ action: 'get_profile' });
+  if (data.ok && data.user) {
+    CU = data.user;
+    initApp();
+  } else {
+    localStorage.removeItem('msrc_token');
+    TOKEN = null;
+  }
+}
+
+// ── PROFILE ───────────────────────────────────────────────────────────────────
+
+function fillProfile() {
+  if (!CU) return;
+  const f = {
+    'prof-name':   CU.full_name,
+    'prof-email':  CU.email,
+    'prof-phone':  CU.phone,
+    'prof-uni':    CU.university,
+    'prof-level':  CU.academic_level,
+    'prof-region': CU.region,
+    'rc-name':     CU.full_name,
+    'rc-email':    CU.email,
+    'rc-uni':      CU.university,
+    'rc-level':    CU.academic_level,
+  };
+  Object.entries(f).forEach(([id, val]) => {
+    const el = document.getElementById(id);
+    if (el) el.value = val || '';
+  });
+}
+
+// ── ABSTRACTS ─────────────────────────────────────────────────────────────────
+
+function calcWords() {
+  const txt = ['a-bg', 'a-meth', 'a-res', 'a-conc']
+    .map(id => document.getElementById(id)?.value || '').join(' ').trim();
+  const w = txt ? txt.split(/\s+/).filter(Boolean).length : 0;
+  const el = document.getElementById('wc');
+  if (el) {
+    el.textContent = w + ' / 350 words';
+    el.className = 'wcount' + (w > 350 ? ' over' : '');
+  }
+}
+
+function toggleCOI() {
+  const v = document.getElementById('a-coi').checked;
+  document.getElementById('coi-detail').style.display = v ? 'block' : 'none';
+}
+
+let authorIdx = 0;
+function addAuthor() {
+  authorIdx++;
+  const d = document.createElement('div');
+  d.className = 'author-item';
+  d.dataset.authorIdx = authorIdx;
+  d.innerHTML = `
+    <button class="rm-author" onclick="this.parentNode.remove()" title="Remove">×</button>
+    <div class="frow">
+      <div class="fg" style="margin:0"><input class="fi co-name" placeholder="Co-Author Full Name"></div>
+      <div class="fg" style="margin:0"><input class="fi co-email" type="email" placeholder="Email"></div>
+    </div>
+    <div style="margin-top:8px"><input class="fi co-uni" placeholder="University / Institution"></div>`;
+  document.getElementById('authors-wrap').appendChild(d);
+}
+
+async function doSubmitAbstract() {
+  const title     = document.getElementById('a-title').value.trim();
+  const type      = document.getElementById('a-type').value;
+  const specialty = document.getElementById('a-specialty').value;
+  const bg        = document.getElementById('a-bg').value.trim();
+  const meth      = document.getElementById('a-meth').value.trim();
+  const res       = document.getElementById('a-res').value.trim();
+  const conc      = document.getElementById('a-conc').value.trim();
+  const iban      = document.getElementById('a-iban').value.trim();
+  const coi       = document.getElementById('a-coi').checked;
+  const coiText   = document.getElementById('a-coi-text')?.value.trim();
+  const disc      = document.getElementById('a-disc').checked;
+
+  if (!title || !type || !specialty || !bg || !meth || !res || !conc)
+    { toast('Please fill all required fields', 'err'); return; }
+  if (!disc)
+    { toast('Please confirm the disclosure statement', 'err'); return; }
+
+  // Collect co-authors
+  const authors = Array.from(document.querySelectorAll('#authors-wrap .author-item:not(.first)')).map(el => ({
+    name:       el.querySelector('.co-name')?.value.trim() || '',
+    email:      el.querySelector('.co-email')?.value.trim() || '',
+    university: el.querySelector('.co-uni')?.value.trim() || ''
+  })).filter(a => a.name);
+
+  // First author = current user
+  authors.unshift({ name: CU.full_name, email: CU.email, university: CU.university });
+
+  // Optional file upload (base64)
+  let file_base64 = '', file_name = '', photo_base64 = '', photo_name = '';
+  const fileInput  = document.getElementById('a-file');
+  const photoInput = document.getElementById('a-photo');
+
+  if (fileInput.files[0]) {
+    const r = await toBase64(fileInput.files[0]);
+    file_base64 = r.split(',')[1];
+    file_name   = fileInput.files[0].name;
+  }
+  if (photoInput.files[0]) {
+    const r = await toBase64(photoInput.files[0]);
+    photo_base64 = r.split(',')[1];
+    photo_name   = photoInput.files[0].name;
+  }
+
+  const btn = document.querySelector('#page-submit .btn-p[onclick]');
+  setLoading(btn, true);
+  const data = await api('submit_abstract', {
+    title, type, specialty, background: bg, methods: meth,
+    results: res, conclusion: conc, iban, coi, coi_text: coiText,
+    authors, file_base64, file_name, photo_base64, photo_name
+  });
+  setLoading(btn, false);
+
+  if (!data.ok) { toast(data.error || 'Submission failed', 'err'); return; }
+  toast('Abstract submitted! Confirmation email sent.', 'ok');
+  setTimeout(() => nav('my-abstracts', null), 1500);
+}
+
+async function loadMyAbstracts() {
+  const tb = document.getElementById('my-abs-tb');
+  if (!tb) return;
+  tb.innerHTML = '<tr><td colspan="6" class="loading-row"><span class="spinner spinner-d"></span> Loading…</td></tr>';
+  const data = await apiGet({ action: 'get_my_abstracts' });
+  if (!data.ok) { tb.innerHTML = `<tr><td colspan="6" class="loading-row" style="color:var(--danger)">${data.error}</td></tr>`; return; }
+
+  const abs = data.abstracts || [];
+  if (!abs.length) {
+    tb.innerHTML = `<tr><td colspan="6"><div class="empty"><div class="empty-icon">📄</div><div class="empty-title">No Abstracts Yet</div><div class="empty-desc">Submit your first abstract to get started.</div></div></td></tr>`;
+    return;
+  }
+
+  const statusBadge = {
+    submitted:      '<span class="badge b-sub">Submitted</span>',
+    under_review:   '<span class="badge b-review">Under Review</span>',
+    accepted_oral:  '<span class="badge b-oral">Accepted (Oral)</span>',
+    accepted_poster:'<span class="badge b-poster">Accepted (Poster)</span>',
+    rejected:       '<span class="badge b-reject">Rejected</span>',
+    needs_revision: '<span class="badge b-revise">Needs Revision</span>'
+  };
+
+  tb.innerHTML = abs.map(a => `
+    <tr>
+      <td><strong>${escHtml(a.title)}</strong></td>
+      <td>${escHtml(a.type || '').replace(/_/g,' ')}</td>
+      <td>${escHtml(a.specialty || '—')}</td>
+      <td>${formatDate(a.submitted_at)}</td>
+      <td>${statusBadge[a.status] || `<span class="badge b-draft">${escHtml(a.status)}</span>`}</td>
+      <td>${a.avg_score !== undefined ? a.avg_score : '—'}</td>
+    </tr>`).join('');
+}
+
+async function doSaveDraft() {
+  toast('Draft saved locally', 'ok');
+}
+
+// ── EVALUATOR APPLICATION ─────────────────────────────────────────────────────
+
+async function loadEvalApplicationStatus() {
+  const data = await apiGet({ action: 'get_eval_status' });
+  if (!data.ok || !data.application) return;
+  const app = data.application;
+
+  const banner = document.querySelector('#page-evaluator-apply .sbanner');
+  if (!banner) return;
+
+  if (app.status === 'pending') {
+    banner.className = 'sbanner sb-warn';
+    banner.innerHTML = '⏳ Your evaluator application is <strong>pending review</strong>. You will be notified by email once a decision is made.';
+    document.querySelector('#page-evaluator-apply .btn-p[onclick]').disabled = true;
+  } else if (app.status === 'approved') {
+    banner.className = 'sbanner sb-ok';
+    banner.innerHTML = '✅ Your evaluator application has been <strong>approved</strong>! Check "My Assignments" in the Evaluator section.';
+    document.querySelector('#page-evaluator-apply .btn-p[onclick]').disabled = true;
+  } else if (app.status === 'rejected') {
+    banner.className = 'sbanner sb-err';
+    banner.innerHTML = '✗ Your evaluator application was not accepted. You may contact the admin for more information.';
+  }
+}
+
+async function doApplyEval() {
+  const level     = document.getElementById('ev-level').value;
+  const spec      = document.getElementById('ev-spec').value;
+  const yrs       = document.getElementById('ev-yrs').value;
+  const prev      = document.getElementById('ev-prev').value;
+  const prevDet   = document.getElementById('ev-prev-det')?.value.trim();
+
+  if (!level || !spec || !yrs) { toast('Please fill all required fields', 'err'); return; }
+
+  const btn = document.querySelector('#page-evaluator-apply .btn-p');
+  setLoading(btn, true);
+  const data = await api('apply_evaluator', {
+    academic_level: level, specialty: spec, years_exp: yrs,
+    prev_exp: prev, prev_exp_detail: prevDet || ''
+  });
+  setLoading(btn, false);
+
+  if (!data.ok) { toast(data.error || 'Application failed', 'err'); return; }
+  toast('Application submitted! You will be notified by email.', 'ok');
+  loadEvalApplicationStatus();
+}
+
+// ── EVALUATOR WORK ────────────────────────────────────────────────────────────
+
+async function loadEvalWork() {
+  const tb = document.getElementById('eval-work-tb');
+  if (!tb) return;
+  tb.innerHTML = '<tr><td colspan="6" class="loading-row"><span class="spinner spinner-d"></span> Loading…</td></tr>';
+  const data = await apiGet({ action: 'get_assignments' });
+  if (!data.ok) { tb.innerHTML = `<tr><td colspan="6" class="loading-row" style="color:var(--danger)">${data.error}</td></tr>`; return; }
+
+  const assignments = data.assignments || [];
+  const pending     = assignments.filter(a => !a.already_evaluated).length;
+  const badge       = document.getElementById('eval-cnt');
+  if (badge) badge.textContent = pending;
+
+  if (!assignments.length) {
+    tb.innerHTML = `<tr><td colspan="6"><div class="empty"><div class="empty-icon">📋</div><div class="empty-title">No Assignments Yet</div><div class="empty-desc">You have no abstracts assigned for review at this time.</div></div></td></tr>`;
+    return;
+  }
+
+  tb.innerHTML = assignments.map(a => {
+    const abs   = a.abstract || {};
+    const done  = a.already_evaluated || a.eval_status === 'evaluated';
+    return `<tr>
+      <td><strong>${escHtml(abs.title || '—')}</strong></td>
+      <td>${escHtml(abs.type || '—').replace(/_/g,' ')}</td>
+      <td>${escHtml(abs.specialty || '—')}</td>
+      <td>—</td>
+      <td>${done ? '<span class="badge b-accept">Submitted</span>' : '<span class="badge b-pend">Pending</span>'}</td>
+      <td>${done
+        ? '<button class="btn btn-o btn-sm" disabled>Done</button>'
+        : `<button class="btn btn-p btn-sm" onclick='openEvalModal(${JSON.stringify(a)})'>Evaluate</button>`
+      }</td>
+    </tr>`;
+  }).join('');
+}
+
+// ── EVAL MODAL ────────────────────────────────────────────────────────────────
+
+function openEvalModal(assignment) {
+  currentEvalAbstract = typeof assignment === 'string' ? JSON.parse(assignment) : assignment;
+  const abs = currentEvalAbstract.abstract || {};
+  document.getElementById('eval-title').textContent     = abs.title    || '—';
+  document.getElementById('eval-bg').textContent        = abs.background || '—';
+  document.getElementById('eval-meth').textContent      = abs.methods   || '—';
+  document.getElementById('eval-res').textContent       = abs.results   || '—';
+  document.getElementById('eval-conc').textContent      = abs.conclusion || '—';
+  ['sc-orig','sc-meth','sc-clar','sc-rel'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) { el.value = ''; el.removeEventListener('input', updateAvg); el.addEventListener('input', updateAvg); }
+  });
+  document.getElementById('avg-score').textContent = '—';
+  if (document.getElementById('sc-comm')) document.getElementById('sc-comm').value = '';
+  document.getElementById('eval-modal').style.display = 'flex';
+}
+
+function updateAvg() {
+  const vals   = ['sc-orig','sc-meth','sc-clar','sc-rel'].map(id => parseInt(document.getElementById(id).value) || 0);
+  const filled = vals.filter(v => v > 0);
+  if (filled.length === 4) {
+    document.getElementById('avg-score').textContent = (vals.reduce((a,b) => a+b, 0) / 4).toFixed(1);
+  }
+}
+
+async function doSubmitEval() {
+  const scores = ['sc-orig','sc-meth','sc-clar','sc-rel'].map(id => parseInt(document.getElementById(id).value));
+  if (scores.some(s => !s || s < 1 || s > 10)) { toast('Enter all scores between 1 and 10', 'err'); return; }
+
+  const a = currentEvalAbstract || {};
+  const btn = document.querySelector('#eval-modal .btn-p');
+  setLoading(btn, true);
+  const data = await api('submit_evaluation', {
+    assignment_id:  a.id,
+    abstract_id:    a.abstract_id || (a.abstract && a.abstract.id),
+    originality:    scores[0], methodology: scores[1], clarity: scores[2], relevance: scores[3],
+    recommendation: document.getElementById('sc-rec').value,
+    comments:       document.getElementById('sc-comm')?.value.trim() || '',
+    track_assigned: document.getElementById('sc-rec').value.includes('oral') ? 'oral' : 'poster'
+  });
+  setLoading(btn, false);
+
+  if (!data.ok) { toast(data.error || 'Submission failed', 'err'); return; }
+  closeModal('eval-modal');
+  toast('Evaluation submitted successfully!', 'ok');
+  loadEvalWork();
+}
+
+// ── REGISTRATION & PRICING ────────────────────────────────────────────────────
+
+async function applyCode() {
+  const code = document.getElementById('disc-code').value.trim().toUpperCase();
+  const msg  = document.getElementById('disc-msg');
+  if (!code) return;
+
+  const data = await api('verify_discount', { code });
+  if (!data.ok) {
+    discount = null;
+    msg.textContent = '✗ ' + (data.error || 'Invalid or expired discount code');
+    msg.style.color = 'var(--danger)';
+    calcPrice();
+    return;
+  }
+  discount = data.discount;
+  msg.textContent = `✓ ${code} applied — ${discount.amount} SAR discount applied!`;
+  if (discount.type === 'conference_free') msg.textContent = `✓ ${code} applied — Conference attendance is FREE!`;
+  msg.style.color = 'var(--success)';
+  calcPrice();
+  toast('Discount code applied!', 'ok');
+}
+
+function calcPrice() {
+  const wk   = document.getElementById('wk-check').checked;
+  document.getElementById('p-wk-row').style.display = wk ? 'flex' : 'none';
+  let conf = 50, disc = 0;
+  if (discount) {
+    disc = discount.amount;
+    if (discount.type === 'conference_free') { disc = 50; conf = 0; }
+    document.getElementById('p-disc-row').style.display = 'flex';
+    document.getElementById('p-conf').textContent = conf === 0 ? '0 SAR (Free)' : conf + ' SAR';
+    document.getElementById('p-disc-amt').textContent = '-' + disc + ' SAR';
+  } else {
+    document.getElementById('p-disc-row').style.display = 'none';
+    document.getElementById('p-conf').textContent = '50 SAR';
+  }
+  const total = Math.max(0, conf + (wk ? 50 : 0));
+  document.getElementById('p-total').textContent = total === 0 ? 'FREE' : total + ' SAR';
+}
+
+async function doPayment() {
+  const phone = document.getElementById('rc-phone').value.trim();
+  const id    = document.getElementById('rc-id').value.trim();
+  if (!phone || !id) { toast('Please enter your phone number and national ID', 'err'); return; }
+
+  const wk   = document.getElementById('wk-check').checked;
+  const code  = discount ? discount.code : '';
+
+  const btn = document.querySelector('#page-register .btn-g');
+  setLoading(btn, true);
+  const data = await api('register_conference', {
+    phone, national_id: id, workshop: wk, discount_code: code
+  });
+  setLoading(btn, false);
+
+  if (!data.ok) { toast(data.error || 'Registration failed', 'err'); return; }
+  toast('Registration confirmed! Check your email.', 'ok');
+  setTimeout(() => nav('dashboard', null), 2000);
+}
+
+// ── CERTIFICATES ──────────────────────────────────────────────────────────────
+
+async function loadMyCerts() {
+  const wrap = document.getElementById('certs-wrap');
+  if (!wrap) return;
+  wrap.innerHTML = '<div class="empty"><span class="spinner spinner-d"></span></div>';
+  const data = await apiGet({ action: 'get_my_certs' });
+  if (!data.ok) { wrap.innerHTML = `<div class="empty"><div class="empty-title" style="color:var(--danger)">${data.error}</div></div>`; return; }
+
+  const certs = data.certificates || [];
+  if (!certs.length) {
+    wrap.innerHTML = '<div class="empty"><div class="empty-icon">🎓</div><div class="empty-title">No Certificates Yet</div><div class="empty-desc">Certificates are generated after the conference concludes.</div></div>';
+    return;
+  }
+
+  const typeLabel = { attendance: 'Certificate of Attendance', appreciation: 'Certificate of Appreciation', presentation: 'Certificate of Presentation' };
+  wrap.innerHTML = certs.map(c => `
+    <div class="cert-card">
+      <div class="cert-type">${typeLabel[c.cert_type] || c.cert_type}</div>
+      <div class="cert-name">${escHtml(CU ? CU.full_name : '')}</div>
+      <div class="cert-role">${CONF_NAME}</div>
+      <div class="cert-uid">ID: ${c.cert_id}</div>
+      <div class="cert-acts">
+        <button class="btn btn-g btn-sm" onclick="navigator.clipboard.writeText('${c.cert_id}').then(()=>toast('Certificate ID copied','ok'))">📋 Copy ID</button>
+      </div>
+    </div>`).join('');
+}
+
+async function doVerify() {
+  const uid = document.getElementById('v-uid').value.trim().toUpperCase();
+  const res = document.getElementById('v-result');
+  if (!uid) { res.innerHTML = '<div class="sbanner sb-err" style="margin-top:12px">Please enter a certificate ID</div>'; return; }
+
+  res.innerHTML = '<div style="padding:12px;color:var(--g500)"><span class="spinner spinner-d"></span> Verifying…</div>';
+  const data = await apiGet({ action: 'verify_cert', cert_id: uid });
+  if (!data.ok || !data.verified) {
+    res.innerHTML = `<div class="sbanner sb-err" style="margin-top:12px">✗ ${data.error || 'Certificate not found. Check the ID and try again.'}</div>`;
+    return;
+  }
+  const cert = data.cert;
+  const issued = formatDate(cert.issued_at);
+  res.innerHTML = `
+    <div class="sbanner sb-ok" style="margin-top:12px">
+      <div>
+        <strong>✓ Certificate Verified</strong><br>
+        <strong>Recipient:</strong> ${escHtml(cert.recipient)}<br>
+        <strong>Type:</strong> ${escHtml(cert.cert_type)}<br>
+        <strong>Conference:</strong> ${escHtml(cert.conference)}<br>
+        <strong>Issued:</strong> ${issued}
+      </div>
+    </div>`;
+}
+
+function verifyCertPublic() {
+  // Open a standalone verify modal without requiring login
+  document.getElementById('verify-pub-modal').style.display = 'flex';
+}
+
+// ── ADMIN STATS ───────────────────────────────────────────────────────────────
+
+async function loadAdminStats() {
+  const data = await apiGet({ action: 'admin_stats' });
+  if (!data.ok) { toast('Could not load admin stats', 'err'); return; }
+  const s = data.stats;
+  const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+  set('stat-users',     s.users);
+  set('stat-abstracts', s.abstracts);
+  set('stat-regs',      s.registrations);
+  set('stat-rev',       s.revenue);
+  set('stat-evals',     s.evaluators);
+  set('stat-acc',       s.accepted);
+
+  // Update chart bars if breakdown available
+  if (s.status_breakdown) {
+    const total = s.abstracts || 1;
+    const map = {
+      under_review:   { label:'Under Review',     cls:'cbar-fill', bg:'var(--warning)' },
+      accepted_oral:  { label:'Accepted (Oral)',   cls:'cbar-fill', bg:'var(--oral)' },
+      accepted_poster:{ label:'Accepted (Poster)', cls:'cbar-fill', bg:'var(--poster)' },
+      rejected:       { label:'Rejected',          cls:'cbar-fill', bg:'var(--danger)' },
+      needs_revision: { label:'Needs Revision',    cls:'cbar-fill', bg:'#b45309' }
+    };
+    Object.entries(map).forEach(([key, cfg]) => {
+      const count = s.status_breakdown[key] || 0;
+      const pct   = Math.round((count / total) * 100);
+      // Find and update the matching bar row
+      const rows  = document.querySelectorAll('.cbar-row');
+      rows.forEach(row => {
+        if (row.querySelector('.cbar-meta span:first-child')?.textContent === cfg.label) {
+          row.querySelector('.cbar-meta span:last-child').textContent = count;
+          const fill = row.querySelector('.cbar-fill');
+          if (fill) fill.style.width = pct + '%';
+        }
+      });
+    });
+  }
+}
+
+// ── ADMIN ABSTRACTS ───────────────────────────────────────────────────────────
+
+async function loadAdminAbstracts() {
+  const tb = document.getElementById('admin-abs-tb');
+  if (!tb) return;
+  tb.innerHTML = '<tr><td colspan="7" class="loading-row"><span class="spinner spinner-d"></span> Loading…</td></tr>';
+  const data = await apiGet({ action: 'admin_abstracts' });
+  if (!data.ok) { tb.innerHTML = `<tr><td colspan="7" class="loading-row" style="color:var(--danger)">${data.error}</td></tr>`; return; }
+
+  const abs = data.abstracts || [];
+  const cnt = document.getElementById('abs-count');
+  if (cnt) cnt.textContent = abs.length;
+
+  if (!abs.length) {
+    tb.innerHTML = '<tr><td colspan="7"><div class="empty"><div class="empty-icon">📄</div><div class="empty-title">No abstracts yet</div></div></td></tr>';
+    return;
+  }
+
+  const statusBadge = {
+    submitted:      'b-sub', under_review:'b-review', accepted_oral:'b-oral',
+    accepted_poster:'b-poster', rejected:'b-reject', needs_revision:'b-revise'
+  };
+  const statusLabel = {
+    submitted:'Submitted', under_review:'Under Review', accepted_oral:'Accepted (Oral)',
+    accepted_poster:'Accepted (Poster)', rejected:'Rejected', needs_revision:'Needs Revision'
+  };
+
+  tb.innerHTML = abs.map(a => {
+    const sc = a.avg_score && a.avg_score !== '' ? parseFloat(a.avg_score).toFixed(1) : '—';
+    const cls = statusBadge[a.status] || 'b-draft';
+    const lbl = statusLabel[a.status] || a.status;
+    const decided = ['accepted_oral','accepted_poster','rejected'].includes(a.status);
+    return `<tr>
+      <td><strong>${escHtml(a.title)}</strong></td>
+      <td>${escHtml(a.presenter_name || '—')}</td>
+      <td>${escHtml(a.type || '—').replace(/_/g,' ')}</td>
+      <td>${escHtml(a.specialty || '—')}</td>
+      <td>${sc}</td>
+      <td><span class="badge ${cls}">${lbl}</span></td>
+      <td>
+        ${decided
+          ? `<span style="color:var(--success);font-size:12px">✓ Decision Made</span>`
+          : `<select class="fsel" style="padding:5px 8px;font-size:12px;width:auto" data-abs-id="${a.id}" onchange="updateAbsStatus(this)">
+              <option value="${a.status}" selected>${lbl}</option>
+              <option value="under_review">Set Under Review</option>
+              <option value="accepted_oral">✓ Accept (Oral)</option>
+              <option value="accepted_poster">✓ Accept (Poster)</option>
+              <option value="rejected">✗ Reject</option>
+              <option value="needs_revision">⟳ Needs Revision</option>
+            </select>`
+        }
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+async function updateAbsStatus(sel) {
+  const status   = sel.value;
+  const abstractId = sel.dataset.absId;
+  if (!abstractId) { toast('Could not identify abstract', 'err'); return; }
+
+  const data = await api('admin_update_abstract', { abstract_id: abstractId, status });
+  if (!data.ok) { toast(data.error || 'Update failed', 'err'); return; }
+
+  const labels = { accepted_oral:'✓ Accepted (Oral)', accepted_poster:'✓ Accepted (Poster)',
+    rejected:'✗ Rejected', under_review:'Under Review', needs_revision:'Needs Revision', submitted:'Submitted' };
+  const classes = { accepted_oral:'b-oral', accepted_poster:'b-poster', accepted:'b-accept',
+    rejected:'b-reject', under_review:'b-review', needs_revision:'b-revise', submitted:'b-sub' };
+
+  const td = sel.closest('tr').querySelector('td:nth-child(6)');
+  if (td) td.innerHTML = `<span class="badge ${classes[status]||'b-sub'}">${labels[status]||status}</span>`;
+  toast('Status updated and presenter notified', 'ok');
+  loadAdminStats();
+}
+
+// ── ADMIN EVALUATORS ──────────────────────────────────────────────────────────
+
+async function loadAdminEvalApps() {
+  const tb = document.getElementById('admin-eval-tb');
+  if (!tb) return;
+  tb.innerHTML = '<tr><td colspan="7" class="loading-row"><span class="spinner spinner-d"></span> Loading…</td></tr>';
+  const data = await apiGet({ action: 'admin_evaluator_apps' });
+  if (!data.ok) { tb.innerHTML = `<tr><td colspan="7" class="loading-row" style="color:var(--danger)">${data.error}</td></tr>`; return; }
+
+  const apps = data.applications || [];
+  if (!apps.length) {
+    tb.innerHTML = '<tr><td colspan="7"><div class="empty"><div class="empty-icon">🔬</div><div class="empty-title">No Applications</div></div></td></tr>';
+    return;
+  }
+
+  const pending = apps.filter(a => a.status === 'pending').length;
+  const badge = document.querySelector('#page-admin-evaluators .badge.b-pend');
+  if (badge) badge.textContent = pending + ' Pending';
+
+  tb.innerHTML = apps.map(a => {
+    const isPending = a.status === 'pending';
+    const cls       = { pending:'b-pend', approved:'b-accept', rejected:'b-reject' }[a.status] || 'b-draft';
+    const lbl       = { pending:'Pending', approved:'Approved', rejected:'Rejected' }[a.status] || a.status;
+    return `<tr>
+      <td>${escHtml(a.applicant_name || '—')}</td>
+      <td>${escHtml(a.specialty || '—')}</td>
+      <td>${escHtml(a.academic_level || '—')}</td>
+      <td>${escHtml(a.years_exp || '—')} yrs</td>
+      <td>${formatDate(a.applied_at)}</td>
+      <td><span class="badge ${cls}">${lbl}</span></td>
+      <td style="white-space:nowrap">
+        ${isPending
+          ? `<button class="btn btn-s btn-sm" onclick="evalAction('approve','${a.id}',this)">✓ Approve</button>
+             <button class="btn btn-d btn-sm" onclick="evalAction('reject','${a.id}',this)">✗ Reject</button>`
+          : `<button class="btn btn-o btn-sm" onclick="openAssignModal('${a.user_id}','${escHtml(a.applicant_name)}')">Assign Abstracts</button>`
+        }
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+async function evalAction(action, appId, btn) {
+  if (btn) setLoading(btn, true);
+  const data = await api('admin_process_eval_app', { app_id: appId, action });
+  if (btn) setLoading(btn, false);
+  if (!data.ok) { toast(data.error || 'Action failed', 'err'); return; }
+  toast(action === 'approve' ? 'Evaluator approved and access granted' : 'Application rejected', 'ok');
+  loadAdminEvalApps();
+}
+
+// ── ADMIN REGISTRATIONS ───────────────────────────────────────────────────────
+
+async function loadAdminRegistrations() {
+  const tb = document.querySelector('#page-admin-registrations table tbody');
+  if (!tb) return;
+  tb.innerHTML = '<tr><td colspan="7" class="loading-row"><span class="spinner spinner-d"></span> Loading…</td></tr>';
+  const data = await apiGet({ action: 'admin_registrations' });
+  if (!data.ok) { tb.innerHTML = `<tr><td colspan="7" class="loading-row" style="color:var(--danger)">${data.error}</td></tr>`; return; }
+
+  const regs = data.registrations || [];
+  const s    = data.stats || {};
+
+  // Update summary cards
+  const setCard = (el, val) => { if (el) el.textContent = val; };
+  const cards   = document.querySelectorAll('#page-admin-registrations .scard .sval');
+  if (cards[0]) cards[0].textContent = s.total || 0;
+  if (cards[1]) { cards[1].textContent = (s.revenue || 0).toLocaleString('en-SA'); }
+  if (cards[2]) cards[2].textContent = s.with_workshop || 0;
+  if (cards[3]) cards[3].textContent = s.discount_used || 0;
+
+  if (!regs.length) {
+    tb.innerHTML = '<tr><td colspan="7"><div class="empty"><div class="empty-icon">🎫</div><div class="empty-title">No registrations yet</div></div></td></tr>';
+    return;
+  }
+
+  const payBadge = { paid:'b-paid', free:'b-accept', pending:'b-pend', paid_onsite:'b-paid' };
+  const modBadge = { online:'b-online', onsite:'b-onsite' };
+  tb.innerHTML = regs.map(r => `
+    <tr>
+      <td>${escHtml(r.user_name || '—')}</td>
+      <td>${escHtml(r.user_email || '—')}</td>
+      <td>${escHtml(r.user_university || '—')}</td>
+      <td>${r.workshop === 'yes' ? '✓' : '—'}</td>
+      <td>${r.total_amount || 0} SAR</td>
+      <td><span class="badge ${modBadge[r.mode] || 'b-draft'}">${r.mode || '—'}</span></td>
+      <td><span class="badge ${payBadge[r.payment_status] || 'b-draft'}">${r.payment_status || '—'}</span></td>
+    </tr>`).join('');
+}
+
+// ── ADMIN USERS ───────────────────────────────────────────────────────────────
+
+async function loadAdminUsers() {
+  const tb = document.getElementById('admin-users-tb');
+  if (!tb) return;
+  tb.innerHTML = '<tr><td colspan="7" class="loading-row"><span class="spinner spinner-d"></span> Loading…</td></tr>';
+  const data = await apiGet({ action: 'admin_users' });
+  if (!data.ok) { tb.innerHTML = `<tr><td colspan="7" class="loading-row" style="color:var(--danger)">${data.error}</td></tr>`; return; }
+
+  const users = data.users || [];
+  const cnt   = document.getElementById('users-count');
+  if (cnt) cnt.textContent = users.length;
+
+  if (!users.length) {
+    tb.innerHTML = '<tr><td colspan="7"><div class="empty"><div class="empty-icon">👥</div><div class="empty-title">No users yet</div></div></td></tr>';
+    return;
+  }
+
+  const roleBadge = roles => String(roles).split(',').map(r => {
+    r = r.trim();
+    const cls = { delegate:'b-draft', presenter:'b-sub', evaluator:'b-review', admin:'b-accept', super_admin:'b-oral' }[r] || 'b-draft';
+    return `<span class="badge ${cls}">${r}</span>`;
+  }).join(' ');
+
+  const isSuperAdmin = CU && String(CU.roles).includes('super_admin');
+
+  tb.innerHTML = users.map(u => `
+    <tr>
+      <td><strong>${escHtml(u.full_name || '—')}</strong></td>
+      <td>${escHtml(u.email || '—')}</td>
+      <td>${escHtml(u.university || '—')}</td>
+      <td>${escHtml(u.academic_level || '—')}</td>
+      <td>${roleBadge(u.roles)}</td>
+      <td style="color:var(--success)">✓</td>
+      <td style="white-space:nowrap">
+        ${isSuperAdmin
+          ? `<button class="btn btn-g btn-sm" onclick="promoteUser('${u.id}','${escHtml(u.full_name)}','${escHtml(String(u.roles))}')">Edit Roles</button>`
+          : '<span style="color:var(--g300);font-size:12px">—</span>'
+        }
+      </td>
+    </tr>`).join('');
+}
+
+async function promoteUser(userId, name, currentRoles) {
+  const newRoles = prompt(`Edit roles for ${name}\nCurrent: ${currentRoles}\n\nEnter comma-separated roles:\n(delegate, presenter, evaluator, admin, super_admin)`, currentRoles);
+  if (!newRoles || newRoles === currentRoles) return;
+
+  const data = await api('admin_update_user_role', { user_id: userId, roles: newRoles.trim() });
+  if (!data.ok) { toast(data.error || 'Failed to update roles', 'err'); return; }
+  toast('Roles updated for ' + name, 'ok');
+  loadAdminUsers();
+}
+
+// ── ADMIN CERTIFICATES ────────────────────────────────────────────────────────
+
+async function loadAdminCerts() {
+  // Currently reads from Certificates sheet - can be extended
+}
+
+async function doBulkCerts() {
+  const btn = document.querySelector('#page-admin-certs .btn-p.btn-fw');
+  setLoading(btn, true);
+  const data = await api('admin_bulk_certs');
+  setLoading(btn, false);
+  if (!data.ok) { toast(data.error || 'Failed', 'err'); return; }
+  toast(data.message || 'Certificates generated!', 'ok');
+}
+
+async function doIssueCert() {
+  const userEmail = document.getElementById('mc-user').value.trim();
+  const certType  = document.getElementById('mc-type')?.value || 'attendance';
+  if (!userEmail) { toast('Please enter a user email', 'err'); return; }
+
+  const btn = document.querySelector('#page-admin-certs .btn-g.btn-fw');
+  setLoading(btn, true);
+  const data = await api('admin_issue_cert', { user_email: userEmail, cert_type: certType });
+  setLoading(btn, false);
+
+  if (!data.ok) { toast(data.error || 'Failed to issue certificate', 'err'); return; }
+  toast(`Certificate issued! ID: ${data.cert_id}`, 'ok');
+}
+
+// ── ADMIN ONSITE / ASSIGN ─────────────────────────────────────────────────────
+
+function openOnsiteModal() { document.getElementById('onsite-modal').style.display = 'flex'; }
+
+async function doOnsiteReg() {
+  const email    = document.getElementById('os-user').value.trim();
+  const workshop = document.getElementById('os-wk').checked;
+  const notes    = document.getElementById('os-notes').value.trim();
+  if (!email) { toast('Please enter a user email', 'err'); return; }
+
+  const btn = document.querySelector('#onsite-modal .btn-p');
+  setLoading(btn, true);
+  const data = await api('admin_add_onsite', { user_email: email, workshop, notes });
+  setLoading(btn, false);
+
+  if (!data.ok) { toast(data.error || 'Registration failed', 'err'); return; }
+  closeModal('onsite-modal');
+  toast('Onsite registration added. Certificate generated!', 'ok');
+  loadAdminRegistrations();
+}
+
+function openAssignModal(evaluatorId, evalName) {
+  currentAssignEvalId = evaluatorId || null;
+  document.querySelector('#assign-modal .modal-body div:first-child').textContent =
+    `Evaluator: ${evalName || '—'}`;
+  // Load unassigned abstracts
+  loadAssignableAbstracts(evaluatorId);
+  document.getElementById('assign-modal').style.display = 'flex';
+}
+
+async function loadAssignableAbstracts(evaluatorId) {
+  const tbody = document.querySelector('#assign-modal tbody');
+  if (!tbody) return;
+  tbody.innerHTML = '<tr><td colspan="4" class="loading-row"><span class="spinner spinner-d"></span></td></tr>';
+
+  const data = await apiGet({ action: 'admin_abstracts' });
+  if (!data.ok || !data.abstracts) return;
+
+  const available = data.abstracts.filter(a => a.status === 'submitted' || a.status === 'under_review');
+  if (!available.length) {
+    tbody.innerHTML = '<tr><td colspan="4" class="loading-row">No assignable abstracts found</td></tr>';
+    return;
+  }
+  tbody.innerHTML = available.map(a => `
+    <tr>
+      <td><input type="checkbox" value="${a.id}"></td>
+      <td>${escHtml(a.title)}</td>
+      <td>${escHtml(a.type || '—').replace(/_/g,' ')}</td>
+      <td><span class="badge b-draft">Unassigned</span></td>
+    </tr>`).join('');
+}
+
+async function doAssign() {
+  if (!currentAssignEvalId) { toast('No evaluator selected', 'err'); return; }
+  const checked = Array.from(document.querySelectorAll('#assign-modal tbody input[type=checkbox]:checked'))
+    .map(cb => cb.value);
+  if (!checked.length) { toast('Please select at least one abstract', 'err'); return; }
+
+  const btn = document.querySelector('#assign-modal .btn-p');
+  setLoading(btn, true);
+  const data = await api('admin_assign_abstracts', { evaluator_id: currentAssignEvalId, abstract_ids: checked });
+  setLoading(btn, false);
+
+  if (!data.ok) { toast(data.error || 'Assignment failed', 'err'); return; }
+  closeModal('assign-modal');
+  toast(data.message || 'Abstracts assigned successfully', 'ok');
+}
+
+function toggleAll(cb) {
+  document.querySelectorAll('#assign-modal tbody input[type=checkbox]:not([disabled])')
+    .forEach(c => c.checked = cb.checked);
+}
+
+// ── CSV EXPORT ────────────────────────────────────────────────────────────────
+
+function exportCSV(type) {
+  const token = TOKEN || localStorage.getItem('msrc_token') || '';
+  const url   = `${API_URL}?action=export_csv&type=${type}&token=${token}`;
+  window.open(url, '_blank');
+  toast('Downloading ' + type + ' CSV…', 'ok');
+}
+
+// ── TABLE SORTING ─────────────────────────────────────────────────────────────
+
+function sortTable(tableSelector, colIndex, isNumeric) {
+  const table = document.querySelector(tableSelector);
+  if (!table) return;
+  const tbody = table.querySelector('tbody');
+  const rows  = Array.from(tbody.querySelectorAll('tr'));
+  const dir   = table.dataset.sortDir === 'asc' ? -1 : 1;
+  table.dataset.sortDir = dir === 1 ? 'asc' : 'desc';
+
+  rows.sort((a, b) => {
+    let at = a.cells[colIndex]?.textContent.trim() || '';
+    let bt = b.cells[colIndex]?.textContent.trim() || '';
+    if (isNumeric) {
+      return (parseFloat(at.replace(/[^0-9.-]+/g,'')) || 0) - (parseFloat(bt.replace(/[^0-9.-]+/g,'')) || 0) * dir;
+    }
+    return at.localeCompare(bt) * dir;
+  });
+  tbody.append(...rows);
+}
+
+// ── MODAL / TOAST ─────────────────────────────────────────────────────────────
+
+function closeModal(id) { const el = document.getElementById(id); if (el) el.style.display = 'none'; }
+
+document.addEventListener('click', e => {
+  if (e.target.classList.contains('modal-bg')) closeModal(e.target.id);
+});
+
+function toast(msg, type) {
+  const inner = document.getElementById('toast-inner');
+  const icons = { ok:'✓', err:'✕', warn:'⚠' };
+  if (!inner) return;
+  inner.className = 'toast-inner toast-' + (type || 'ok');
+  document.getElementById('toast-icon').textContent = icons[type] || '✓';
+  document.getElementById('toast-msg').textContent  = msg;
+  inner.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => inner.classList.remove('show'), 4000);
+}
+
+// ── MISC HELPERS ──────────────────────────────────────────────────────────────
+
+function toggleUniName() {
+  const v = document.getElementById('r-uni').value;
+  document.getElementById('uni-name-grp').style.display = v === 'non_kau' ? 'block' : 'none';
+}
+function togglePrevExp() {
+  const v = document.getElementById('ev-prev').value;
+  document.getElementById('prev-exp-box').style.display = v === 'yes' ? 'block' : 'none';
+}
+
+function escHtml(str) {
+  return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function formatDate(iso) {
+  if (!iso) return '—';
+  try { return new Date(iso).toLocaleDateString('en-GB', { year:'numeric', month:'short', day:'numeric' }); }
+  catch(e) { return String(iso).substring(0,10); }
+}
+
+function toBase64(file) {
+  return new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload  = () => res(r.result);
+    r.onerror = () => rej(new Error('File read failed'));
+    r.readAsDataURL(file);
+  });
+}
+
+// Public certificate verify (no login required)
+async function doVerifyPublic() {
+  const uid = document.getElementById('pub-v-uid').value.trim().toUpperCase();
+  const res = document.getElementById('pub-v-result');
+  if (!uid) { res.innerHTML = '<div class="sbanner sb-err" style="margin-top:12px">Please enter a certificate ID</div>'; return; }
+
+  res.innerHTML = '<div style="padding:12px;color:var(--g500)"><span class="spinner spinner-d"></span> Verifying…</div>';
+  const data = await apiGet({ action: 'verify_cert', cert_id: uid });
+  if (!data.ok) {
+    res.innerHTML = `<div class="sbanner sb-err" style="margin-top:12px">✗ ${data.error || 'Certificate not found.'}</div>`;
+    return;
+  }
+  const cert   = data.cert;
+  const issued = formatDate(cert.issued_at);
+  res.innerHTML = `
+    <div class="sbanner sb-ok" style="margin-top:12px">
+      <div>✅ <strong>Certificate Verified</strong><br>
+        <strong>Recipient:</strong> ${escHtml(cert.recipient)}<br>
+        <strong>Type:</strong> ${escHtml(cert.cert_type)}<br>
+        <strong>Conference:</strong> ${escHtml(cert.conference)}<br>
+        <strong>Issued:</strong> ${issued}
+      </div>
+    </div>`;
+}
+
+// ── PUBLIC CERTIFICATE VERIFY ─────────────────────────────────────────────────
+
+async function verifyPublicCert() {
+  const code = document.getElementById('verify-pub-code').value.trim();
+  if (!code) { toast('Please enter a certificate code', 'err'); return; }
+
+  const btn = document.getElementById('verify-pub-btn');
+  const resultBox = document.getElementById('verify-pub-result');
+  setLoading(btn, true);
+  resultBox.style.display = 'none';
+
+  const data = await apiGet('verify_cert', { code });
+  setLoading(btn, false);
+
+  if (!data.ok) {
+    resultBox.style.cssText = 'display:block;background:var(--err-bg,#fff1f0);border:1.5px solid #ffa39e;border-radius:10px;padding:16px;font-size:13px;color:#cf1322';
+    resultBox.innerHTML = '<strong>❌ Certificate Not Found</strong><br>This code does not match any issued certificate. Please check the code and try again.';
+    return;
+  }
+
+  const c = data.certificate;
+  resultBox.style.cssText = 'display:block;background:#f6ffed;border:1.5px solid #b7eb8f;border-radius:10px;padding:16px;font-size:13px;color:#135200';
+  resultBox.innerHTML = `
+    <strong>✅ Certificate Verified</strong><br><br>
+    <strong>Recipient:</strong> ${escHtml(c.full_name)}<br>
+    <strong>Certificate Type:</strong> ${escHtml(c.cert_type)}<br>
+    <strong>Issued On:</strong> ${formatDate(c.issued_at)}<br>
+    <strong>Code:</strong> <span style="font-family:monospace">${escHtml(c.cert_code)}</span>
+  `;
+}
+
+// ── PAGE INIT ─────────────────────────────────────────────────────────────────
+
+window.addEventListener('DOMContentLoaded', async () => {
+  checkResetToken();
+  await tryAutoLogin();
+});
+</script>
+</body>
+</html>
