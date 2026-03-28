@@ -7,7 +7,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Mulish:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     /* ════════════════════════════════════════════
-       MSRC 2026 · SPACE / GALAXY THEME
+       MSRC 2026 · SPACE / GALAXY THEMEs s s sss s
     ════════════════════════════════════════════ */
     :root {
       --navy:        #1a0645;
@@ -59,13 +59,153 @@
       z-index: 0;
       pointer-events: none;
     }
-
+    
+    /* Make body click-through directly to canvas for burst effect */
+    body { cursor: default; }
+    
     /* ── EVERYTHING ABOVE CANVAS ── */
     #auth-section, #app, .modal-bg, .toast {
       position: relative;
       z-index: 1;
     }
 
+    /* ════════════ AUTH ════════════ */
+    .auth-wrap {
+      min-height: 100vh;
+      display: flex;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .auth-brand {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 60px;
+      position: relative;
+      pointer-events: none; /* Allows clicking through to background burst */
+    }
+
+    .brand-logo {
+      font-family: 'Cinzel', serif;
+      font-size: 88px;
+      font-weight: 700;
+      color: var(--gold);
+      letter-spacing: -2px;
+      line-height: 1;
+      text-shadow: 0 0 60px rgba(212,175,55,0.4), 0 0 120px rgba(212,175,55,0.15);
+    }
+
+    .brand-full {
+      color: rgba(255,255,255,0.6);
+      font-size: 13px;
+      margin-top: 14px;
+      text-align: center;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      font-weight: 300;
+    }
+
+    .brand-year {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 6px 20px;
+      border: 1px solid rgba(212,175,55,0.3);
+      border-radius: 30px;
+      color: var(--gold);
+      font-size: 11px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      font-weight: 600;
+      pointer-events: auto;
+    }
+
+    .brand-desc {
+      color: rgba(255,255,255,0.35);
+      font-size: 13px;
+      margin-top: 28px;
+      text-align: center;
+      max-width: 300px;
+      line-height: 1.9;
+      font-weight: 300;
+    }
+
+    .brand-feats {
+      margin-top: 44px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .brand-feat {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: rgba(255,255,255,0.45);
+      font-size: 13px;
+      font-weight: 300;
+    }
+
+    .brand-feat::before {
+      content: '';
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: var(--gold);
+      opacity: 0.6;
+      flex-shrink: 0;
+    }
+
+    .auth-panel {
+      width: 480px;
+      background: var(--gc);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border-left: 1px solid var(--gbd);
+      padding: 52px 48px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      overflow-y: auto;
+    }
+
+    .auth-title {
+      font-family: 'Cinzel', serif;
+      font-size: 26px;
+      font-weight: 600;
+      color: var(--g900);
+      margin-bottom: 6px;
+    }
+
+    .auth-sub {
+      color: var(--g500);
+      font-size: 13px;
+      margin-bottom: 32px;
+      font-weight: 300;
+    }
+
+    .auth-foot {
+      text-align: center;
+      margin-top: 22px;
+      font-size: 13px;
+      color: var(--g500);
+    }
+
+    .auth-link {
+      color: var(--gold);
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--tr);
+    }
+    .auth-link:hover { color: var(--gold-light); text-decoration: underline; }
+
+    .auth-divider {
+      height: 1px;
+      background: var(--gbd);
+      margin: 24px 0;
+    }
     /* ════════════ AUTH ════════════ */
     .auth-wrap {
       min-height: 100vh;
@@ -795,7 +935,7 @@
       <div class="auth-title">Create Account</div>
       <div class="auth-sub">Join MSRC 2026 Conference</div>
       <div class="frow">
-        <div class="fg"><label class="flbl req">Full Name</label><input class="fi" id="r-name" placeholder="Sadiah Shokri"></div>
+        <div class="fg"><label class="flbl req">Full Name</label><input class="fi" id="r-name" placeholder="Sadia Shukri"></div>
         <div class="fg"><label class="flbl req">Phone</label><input class="fi" id="r-phone" placeholder="+966 5X XXX XXXX"></div>
       </div>
       <div class="fg"><label class="flbl req">Email Address</label><input class="fi" id="r-email" type="email" placeholder="your@email.com"></div>
@@ -1696,14 +1836,14 @@ function initStarfield() {
   }
 
   setInterval(() => {
-    if (Math.random() < 0.35) shooters.push({
+    if (Math.random() < 0.6) shooters.push({
       x: Math.random() * W * 0.75,
       y: Math.random() * H * 0.45,
-      vx: 4 + Math.random() * 5,
-      vy: 1.5 + Math.random() * 2.5,
+      vx: 15 + Math.random() * 10,
+      vy: 4 + Math.random() * 5,
       life: 1
     });
-  }, 3800);
+  }, 800);
 
   function frame() {
     requestAnimationFrame(frame);
@@ -1712,10 +1852,10 @@ function initStarfield() {
     ctx.fillRect(0, 0, W, H);
     if (nebulaImg) ctx.drawImage(nebulaImg, 0, 0);
 
-    smooth.x += (mouse.x - smooth.x) * 0.04;
-    smooth.y += (mouse.y - smooth.y) * 0.04;
-    const dx = (smooth.x / W - 0.5) * 36;
-    const dy = (smooth.y / H - 0.5) * 22;
+    smooth.x += (mouse.x - smooth.x) * 0.15;
+    smooth.y += (mouse.y - smooth.y) * 0.15;
+    const dx = (smooth.x / W - 0.5) * 150;
+    const dy = (smooth.y / H - 0.5) * 100;
 
     stars.forEach(s => {
       s.tw += s.ts;
