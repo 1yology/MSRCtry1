@@ -7,16 +7,18 @@
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
-      --navy:#0f2444; --navy-mid:#1a3d6e; --navy-light:#2a5298;
-      --gold:#c8a84b; --gold-light:#e8c96a; --gold-pale:#f9f3e3;
-      --ivory:#fafaf7; --white:#fff;
+      /* ── MSRC Brand: Purple + Gold + White ── */
+      --navy:#4C1D95; --navy-mid:#6D28D9; --navy-light:#7C3AED;
+      --gold:#D4AF37; --gold-light:#F0D060; --gold-pale:#FFFBEB;
+      --ivory:#fafaf8; --white:#fff;
       --g50:#f8f9fc; --g100:#eef0f6; --g300:#b8bfcc;
       --g500:#6b7280; --g700:#374151; --g900:#111827;
       --success:#0e7f3c; --danger:#c1392b; --warning:#d97706; --info:#1e6fb5;
       --oral:#7c3aed; --poster:#0891b2;
       --r:10px; --rl:18px;
-      --sh:0 4px 16px rgba(15,36,68,.12); --shl:0 12px 48px rgba(15,36,68,.18);
+      --sh:0 4px 16px rgba(76,29,149,.12); --shl:0 12px 48px rgba(76,29,149,.2);
       --tr:all .22s cubic-bezier(.4,0,.2,1);
+      --sidebar-bg: linear-gradient(180deg,#3B0764 0%,#4C1D95 100%);
     }
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     html{scroll-behavior:smooth}
@@ -26,7 +28,7 @@
     .app{display:flex;min-height:100vh}
 
     /* ── SIDEBAR ── */
-    .sidebar{width:260px;background:var(--navy);color:#fff;position:fixed;height:100vh;overflow-y:auto;z-index:100;display:flex;flex-direction:column;transition:var(--tr)}
+    .sidebar{width:260px;background:var(--sidebar-bg);color:#fff;position:fixed;height:100vh;overflow-y:auto;z-index:100;display:flex;flex-direction:column;transition:var(--tr)}
     .sidebar-logo{padding:28px 24px 20px;border-bottom:1px solid rgba(255,255,255,.08)}
     .logo-mark{font-family:'Playfair Display',serif;font-size:28px;font-weight:900;color:var(--gold);letter-spacing:1px}
     .logo-sub{font-size:10px;color:rgba(255,255,255,.5);letter-spacing:1.5px;text-transform:uppercase;margin-top:2px}
@@ -56,8 +58,8 @@
     .page{display:none}.page.active{display:block}
 
     /* ── AUTH ── */
-    .auth-wrap{min-height:100vh;display:flex;background:var(--navy);position:relative;overflow:hidden}
-    .auth-wrap::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 20% 50%,rgba(200,168,75,.08) 0%,transparent 60%)}
+    .auth-wrap{min-height:100vh;display:flex;background:var(--sidebar-bg);position:relative;overflow:hidden}
+    .auth-wrap::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 20% 50%,rgba(212,175,55,.1) 0%,transparent 60%)}
     .auth-brand{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px;position:relative;z-index:1}
     .brand-logo{font-family:'Playfair Display',serif;font-size:80px;font-weight:900;color:var(--gold);letter-spacing:-2px;line-height:1}
     .brand-full{color:#fff;font-size:15px;opacity:.7;margin-top:12px;text-align:center;letter-spacing:1px}
@@ -146,7 +148,7 @@
     .sortable:hover{background:rgba(255,255,255,.1) !important; color: #fff;}
 
     /* ── HERO ── */
-    .hero{background:linear-gradient(135deg,var(--navy) 0%,var(--navy-light) 100%);border-radius:var(--rl);padding:36px 40px;color:#fff;margin-bottom:28px;position:relative;overflow:hidden}
+    .hero{background:linear-gradient(135deg,#3B0764 0%,#4C1D95 60%,#6D28D9 100%);border-radius:var(--rl);padding:36px 40px;color:#fff;margin-bottom:28px;position:relative;overflow:hidden}
     .hero::after{content:'MSRC';position:absolute;right:32px;top:50%;transform:translateY(-50%);font-family:'Playfair Display',serif;font-size:110px;font-weight:900;color:rgba(255,255,255,.04);pointer-events:none}
     .hero-greet{font-size:12px;color:var(--gold);font-weight:600;letter-spacing:1.2px;text-transform:uppercase;margin-bottom:6px}
     .hero-name{font-family:'Playfair Display',serif;font-size:30px;font-weight:700;margin-bottom:8px}
@@ -433,6 +435,7 @@
         <div class="nav-item" onclick="nav('admin-evaluators',this)"><span class="nav-icon">🔬</span>Evaluators</div>
         <div class="nav-item" onclick="nav('admin-registrations',this)"><span class="nav-icon">💳</span>Registrations</div>
         <div class="nav-item" onclick="nav('admin-users',this)"><span class="nav-icon">👥</span>Users</div>
+        <div class="nav-item" onclick="nav('admin-discounts',this)"><span class="nav-icon">🎟️</span>Discount Codes</div>
         <div class="nav-item" onclick="nav('admin-certs',this)"><span class="nav-icon">🎓</span>Certificates</div>
       </div>
     </div>
@@ -892,18 +895,59 @@
     <div class="page page-wrap" id="page-admin-users">
       <div class="sec-title">User Management</div>
       <div class="card">
-        <div class="card-hd"><span class="card-title">All Users (<span id="users-count">—</span>)</span></div>
+        <div class="card-hd">
+          <span class="card-title">All Users (<span id="users-count">—</span>)</span>
+          <div style="display:flex;gap:8px" id="admin-user-actions" style="display:none">
+            <button class="btn btn-p btn-sm" onclick="openCreateAdminModal()">+ Create Admin</button>
+            <button class="btn btn-o btn-sm" onclick="exportCSV('users')">📥 Export</button>
+          </div>
+        </div>
         <div class="card-body" style="padding:16px">
           <div class="fbar">
-            <input class="fi" placeholder="Search name or email..." style="flex:1">
-            <select class="fsel" style="width:auto"><option>All Roles</option><option>Delegate</option><option>Presenter</option><option>Evaluator</option><option>Admin</option></select>
+            <input class="fi" id="user-search" placeholder="Search name or email..." style="flex:1" oninput="filterUsersTable()">
+            <select class="fsel" id="user-role-filter" style="width:auto" onchange="filterUsersTable()">
+              <option value="">All Roles</option>
+              <option value="delegate">Delegate</option>
+              <option value="evaluator">Evaluator</option>
+              <option value="admin">Admin</option>
+              <option value="super_admin">Super Admin</option>
+            </select>
           </div>
         </div>
         <div class="tbl-wrap">
           <table>
-            <thead class="admin-thead"><tr><th>Name</th><th>Email</th><th>University</th><th>Level</th><th>Roles</th><th>Verified</th><th>Actions</th></tr></thead>
+            <thead class="admin-thead"><tr><th>Name</th><th>Email</th><th>University</th><th>Level</th><th>Roles</th><th>Status</th><th>Actions</th></tr></thead>
             <tbody id="admin-users-tb"><tr><td colspan="7" class="empty-row">Loading users...</td></tr></tbody>
           </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ ADMIN DISCOUNT CODES ═══ -->
+    <div class="page page-wrap" id="page-admin-discounts">
+      <div class="sec-title">Discount Codes</div>
+      <div style="display:grid;grid-template-columns:1fr 360px;gap:20px;align-items:start">
+        <div class="card">
+          <div class="card-hd">
+            <span class="card-title">All Codes</span>
+            <button class="btn btn-p btn-sm" onclick="openDiscountModal(null)">+ New Code</button>
+          </div>
+          <div class="tbl-wrap">
+            <table>
+              <thead class="admin-thead"><tr><th>Code</th><th>Type</th><th>Amount</th><th>Uses</th><th>Limit</th><th>Description</th><th>Status</th><th>Actions</th></tr></thead>
+              <tbody id="admin-disc-tb"><tr><td colspan="8" class="empty-row">Loading codes...</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-hd"><span class="card-title">Discount Types Guide</span></div>
+          <div class="card-body" style="font-size:13px;color:var(--g700);line-height:1.9">
+            <div style="margin-bottom:12px"><strong style="color:var(--navy)">conference_free</strong><br>Subtracts a fixed SAR amount from the conference fee. Set amount = conference fee (50) to make it free.</div>
+            <div style="margin-bottom:12px"><strong style="color:var(--navy)">discount_fixed</strong><br>Subtracts a fixed SAR amount from the total. Works for any amount up to the total price.</div>
+            <div><strong style="color:var(--navy)">workshop_free</strong><br>Subtracts the workshop fee from the total. Amount should equal workshop price (50 SAR).</div>
+            <div class="divider"></div>
+            <div style="color:var(--g500);font-size:12px">💡 Set <strong>Max Uses</strong> to 0 for unlimited uses. Codes are case-insensitive when entered by users.</div>
+          </div>
         </div>
       </div>
     </div>
@@ -1085,6 +1129,78 @@
   </div>
 </div>
 
+<!-- Create Admin User Modal -->
+<div class="modal-bg" id="create-admin-modal" style="display:none">
+  <div class="modal-box" style="max-width:480px">
+    <div class="modal-hd">
+      <span class="card-title">Create Admin Account</span>
+      <button class="modal-close" onclick="closeModal('create-admin-modal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="sbanner sb-warn" style="margin-bottom:16px">⚠ Admin accounts have elevated privileges. Only create accounts for trusted staff.</div>
+      <div class="fg"><label class="flbl req">Full Name</label><input class="fi" id="ca-name" placeholder="Dr. Sarah Al-Qahtani"></div>
+      <div class="fg"><label class="flbl req">Email Address</label><input class="fi" id="ca-email" type="email" placeholder="admin@example.com"></div>
+      <div class="fg"><label class="flbl req">Temporary Password</label><input class="fi" id="ca-pass" type="password" placeholder="Min. 8 characters"></div>
+      <div class="fg">
+        <label class="flbl req">Role</label>
+        <select class="fsel" id="ca-role">
+          <option value="admin">Admin (can manage abstracts, users, certs)</option>
+          <option value="super_admin">Super Admin (full access including user roles)</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-ft">
+      <button class="btn btn-o" onclick="closeModal('create-admin-modal')">Cancel</button>
+      <button class="btn btn-p" id="ca-btn" onclick="doCreateAdmin()">Create Account</button>
+    </div>
+  </div>
+</div>
+
+<!-- Discount Code Edit Modal -->
+<div class="modal-bg" id="discount-modal" style="display:none">
+  <div class="modal-box" style="max-width:500px">
+    <div class="modal-hd">
+      <span class="card-title" id="disc-modal-title">New Discount Code</span>
+      <button class="modal-close" onclick="closeModal('discount-modal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="frow">
+        <div class="fg">
+          <label class="flbl req">Code</label>
+          <input class="fi" id="dm-code" placeholder="e.g. SPEAKER2026" style="text-transform:uppercase;font-family:monospace;letter-spacing:1px">
+          <div class="fhint">Letters & numbers only, no spaces</div>
+        </div>
+        <div class="fg">
+          <label class="flbl req">Type</label>
+          <select class="fsel" id="dm-type">
+            <option value="conference_free">conference_free</option>
+            <option value="discount_fixed">discount_fixed</option>
+            <option value="workshop_free">workshop_free</option>
+          </select>
+        </div>
+      </div>
+      <div class="frow">
+        <div class="fg">
+          <label class="flbl req">Amount (SAR)</label>
+          <input class="fi" id="dm-amount" type="number" min="0" step="1" placeholder="e.g. 50">
+        </div>
+        <div class="fg">
+          <label class="flbl">Max Uses (0 = unlimited)</label>
+          <input class="fi" id="dm-maxuses" type="number" min="0" step="1" placeholder="0">
+        </div>
+      </div>
+      <div class="fg">
+        <label class="flbl">Description (internal note)</label>
+        <input class="fi" id="dm-desc" placeholder="e.g. For invited speakers">
+      </div>
+    </div>
+    <div class="modal-ft">
+      <button class="btn btn-o" onclick="closeModal('discount-modal')">Cancel</button>
+      <button class="btn btn-p" id="dm-btn" onclick="doSaveDiscount()">Save Code</button>
+    </div>
+  </div>
+</div>
+
 <!-- Toast -->
 <div class="toast" id="toast">
   <div class="toast-inner" id="toast-inner">
@@ -1121,7 +1237,7 @@
 // MSRC 2026 – Frontend Configuration
 // Replace API_URL with your deployed Google Apps Script Web App URL
 // ═══════════════════════════════════════════════════════════════════════════
-const API_URL = 'https://script.google.com/macros/s/AKfycbySeuAqmTbS9iWG9lB8sz4kUrFCZci2gdw7JY_r-kPTLotM5OvNhi8HWApkT3HOFjKX/exec';
+const API_URL = 'https://script.google.com/macros/s/AKfycbx3u0YSLz0_IYRGltAfP801O77Zko8JjqGXUH9NTUGI3L-q9LYo0T-QNz30gRD40YLr/exec';
 // Example: 'https://script.google.com/macros/s/AKfycby.../exec'
 
 // ── STATE ────────────────────────────────────────────────────────────────────
@@ -1131,6 +1247,9 @@ let discount  = null;   // applied discount
 let toastTimer = null;
 let currentEvalAbstract = null; // abstract being evaluated
 let currentAssignEvalId = null; // evaluator being assigned to
+let CHOICES   = {};     // dynamic dropdown choices from backend
+let currentPage = 'dashboard'; // tracks current page for form clearing
+let allUsersCache = []; // cached users list for client-side filtering
 
 // ── API HELPERS ───────────────────────────────────────────────────────────────
 
@@ -1196,10 +1315,51 @@ const pageTitles = {
   'admin-evaluators':     'Evaluator Management',
   'admin-registrations':  'Registrations & Payments',
   'admin-users':          'User Management',
+  'admin-discounts':      'Discount Codes',
   'admin-certs':          'Certificate Management'
 };
 
+// Fields to clear when leaving each page
+const PAGE_CLEAR_FIELDS = {
+  'submit':           ['a-title','a-bg','a-meth','a-res','a-conc','a-iban','a-coi-text'],
+  'evaluator-apply':  ['ev-yrs'],
+  'register':         ['rc-phone','rc-id','disc-code'],
+  'admin-certs':      ['mc-user'],
+  'admin-discounts':  []
+};
+
+function clearPageForms(id) {
+  const fields = PAGE_CLEAR_FIELDS[id];
+  if (!fields) return;
+  fields.forEach(fid => {
+    const el = document.getElementById(fid);
+    if (!el) return;
+    if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') el.value = '';
+    if (el.type === 'checkbox') el.checked = false;
+    if (el.type === 'file') { try { el.value = ''; } catch(e) {} }
+  });
+  // Reset word count
+  const wc = document.getElementById('wc');
+  if (wc && id === 'submit') wc.textContent = '0 / 350 words';
+  // Reset discount display on leaving registration
+  if (id === 'register') {
+    discount = null;
+    const msg = document.getElementById('disc-msg');
+    if (msg) msg.textContent = '';
+    calcPrice();
+  }
+  // Reset forgot password view
+  if (id === 'forgot') {
+    const fp = document.getElementById('fp-email');
+    if (fp) fp.value = '';
+  }
+}
+
 function nav(id, el) {
+  // Clear the page we're leaving
+  clearPageForms(currentPage);
+  currentPage = id;
+
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   const pg = document.getElementById('page-' + id);
@@ -1220,6 +1380,7 @@ function nav(id, el) {
     'admin-evaluators':     loadAdminEvalApps,
     'admin-registrations':  loadAdminRegistrations,
     'admin-users':          loadAdminUsers,
+    'admin-discounts':      loadAdminDiscounts,
     'admin-certs':          loadAdminCerts,
     profile:                fillProfile
   };
@@ -1361,8 +1522,7 @@ function initApp() {
   const roleLabel =
     roles.includes('super_admin') ? 'Super Admin' :
     roles.includes('admin')       ? 'Admin' :
-    roles.includes('evaluator')   ? 'Evaluator' :
-    roles.includes('presenter')   ? 'Presenter' : 'Delegate';
+    roles.includes('evaluator')   ? 'Evaluator' : 'Delegate';
   document.getElementById('sb-role').textContent = roleLabel;
 
   const isAdmin = roles.includes('admin') || roles.includes('super_admin');
@@ -1370,6 +1530,23 @@ function initApp() {
 
   document.getElementById('admin-nav').style.display = isAdmin ? 'block' : 'none';
   document.getElementById('eval-nav').style.display  = isEval  ? 'block' : 'none';
+
+  if (isEval) {
+    const applyNav = Array.from(document.querySelectorAll('.nav-item'))
+      .find(el => el.textContent.includes('Apply as Evaluator'));
+    if (applyNav) applyNav.style.display = 'none';
+  }
+
+  // Load dynamic choices if not cached yet
+  if (!Object.keys(CHOICES).length) loadChoices();
+
+  // Reset page tracker
+  currentPage = 'dashboard';
+  allUsersCache = [];
+
+  fillProfile();
+  nav('dashboard', document.querySelector('.nav-item.active') || document.querySelector('.nav-item'));
+}
 
   // If evaluator-apply nav item should be hidden for existing evaluators
   if (isEval) {
@@ -1701,38 +1878,55 @@ async function applyCode() {
   const msg  = document.getElementById('disc-msg');
   if (!code) return;
 
+  const btn = document.querySelector('#page-register .btn-o[onclick="applyCode()"]');
+  if (btn) setLoading(btn, true);
   const data = await api('verify_discount', { code });
+  if (btn) setLoading(btn, false);
+
   if (!data.ok) {
     discount = null;
-    msg.textContent = '✗ ' + (data.error || 'Invalid or expired discount code');
-    msg.style.color = 'var(--danger)';
+    msg.innerHTML = `<span style="color:var(--danger)">✗ ${escHtml(data.error || 'Invalid or expired discount code')}</span>`;
     calcPrice();
     return;
   }
   discount = data.discount;
-  msg.textContent = `✓ ${code} applied — ${discount.amount} SAR discount applied!`;
-  if (discount.type === 'conference_free') msg.textContent = `✓ ${code} applied — Conference attendance is FREE!`;
-  msg.style.color = 'var(--success)';
   calcPrice();
+  const saved = Math.min(Number(discount.amount), 50 + (document.getElementById('wk-check').checked ? 50 : 0));
+  msg.innerHTML = `<span style="color:var(--success)">✓ Code applied! You save ${saved} SAR</span>`;
   toast('Discount code applied!', 'ok');
 }
 
 function calcPrice() {
-  const wk   = document.getElementById('wk-check').checked;
-  document.getElementById('p-wk-row').style.display = wk ? 'flex' : 'none';
-  let conf = 50, disc = 0;
+  const wk       = document.getElementById('wk-check')?.checked || false;
+  const wkRow    = document.getElementById('p-wk-row');
+  const discRow  = document.getElementById('p-disc-row');
+  const confEl   = document.getElementById('p-conf');
+  const discAmtEl= document.getElementById('p-disc-amt');
+  const totalEl  = document.getElementById('p-total');
+
+  const BASE = 50;
+  const WK   = wk ? 50 : 0;
+  if (wkRow)   wkRow.style.display = wk ? 'flex' : 'none';
+
+  let discAmount = 0;
   if (discount) {
-    disc = discount.amount;
-    if (discount.type === 'conference_free') { disc = 50; conf = 0; }
-    document.getElementById('p-disc-row').style.display = 'flex';
-    document.getElementById('p-conf').textContent = conf === 0 ? '0 SAR (Free)' : conf + ' SAR';
-    document.getElementById('p-disc-amt').textContent = '-' + disc + ' SAR';
+    // Ensure amount is always a proper number (fixes the >50 SAR bug)
+    discAmount = Math.min(Number(discount.amount), BASE + WK); // never discount more than total
+    discRow.style.display  = 'flex';
+    discAmtEl.textContent  = `−${discAmount} SAR`;
+
+    // Label shows what the code does
+    const discLabel = document.querySelector('#p-disc-row span:first-child');
+    if (discLabel) discLabel.textContent = `Discount (${discount.code})`;
+
+    if (confEl) confEl.textContent = BASE + ' SAR';
   } else {
-    document.getElementById('p-disc-row').style.display = 'none';
-    document.getElementById('p-conf').textContent = '50 SAR';
+    if (discRow) discRow.style.display = 'none';
+    if (confEl)  confEl.textContent = BASE + ' SAR';
   }
-  const total = Math.max(0, conf + (wk ? 50 : 0));
-  document.getElementById('p-total').textContent = total === 0 ? 'FREE' : total + ' SAR';
+
+  const total = Math.max(0, BASE + WK - discAmount);
+  if (totalEl) totalEl.textContent = total === 0 ? '🎉 FREE' : total + ' SAR';
 }
 
 async function doPayment() {
@@ -2026,48 +2220,30 @@ async function loadAdminUsers() {
   const data = await apiGet({ action: 'admin_users' });
   if (!data.ok) { tb.innerHTML = `<tr><td colspan="7" class="loading-row" style="color:var(--danger)">${data.error}</td></tr>`; return; }
 
-  const users = data.users || [];
-  const cnt   = document.getElementById('users-count');
-  if (cnt) cnt.textContent = users.length;
+  allUsersCache = data.users || [];
+  const cnt = document.getElementById('users-count');
+  if (cnt) cnt.textContent = allUsersCache.length;
 
-  if (!users.length) {
-    tb.innerHTML = '<tr><td colspan="7"><div class="empty"><div class="empty-icon">👥</div><div class="empty-title">No users yet</div></div></td></tr>';
-    return;
-  }
+  // Show create-admin button only for super_admins
+  const actionsEl = document.getElementById('admin-user-actions');
+  if (actionsEl && hasRole('super_admin')) actionsEl.style.display = 'flex';
 
-  const roleBadge = roles => String(roles).split(',').map(r => {
-    r = r.trim();
-    const cls = { delegate:'b-draft', presenter:'b-sub', evaluator:'b-review', admin:'b-accept', super_admin:'b-oral' }[r] || 'b-draft';
-    return `<span class="badge ${cls}">${r}</span>`;
-  }).join(' ');
-
-  const isSuperAdmin = CU && String(CU.roles).includes('super_admin');
-
-  tb.innerHTML = users.map(u => `
-    <tr>
-      <td><strong>${escHtml(u.full_name || '—')}</strong></td>
-      <td>${escHtml(u.email || '—')}</td>
-      <td>${escHtml(u.university || '—')}</td>
-      <td>${escHtml(u.academic_level || '—')}</td>
-      <td>${roleBadge(u.roles)}</td>
-      <td style="color:var(--success)">✓</td>
-      <td style="white-space:nowrap">
-        ${isSuperAdmin
-          ? `<button class="btn btn-g btn-sm" onclick="promoteUser('${u.id}','${escHtml(u.full_name)}','${escHtml(String(u.roles))}')">Edit Roles</button>`
-          : '<span style="color:var(--g300);font-size:12px">—</span>'
-        }
-      </td>
-    </tr>`).join('');
+  renderUsersTable(allUsersCache);
 }
 
-async function promoteUser(userId, name, currentRoles) {
-  const newRoles = prompt(`Edit roles for ${name}\nCurrent: ${currentRoles}\n\nEnter comma-separated roles:\n(delegate, presenter, evaluator, admin, super_admin)`, currentRoles);
-  if (!newRoles || newRoles === currentRoles) return;
+async function promoteUser(userId, currentRoles) {
+  const newRoles = prompt(`Edit roles for this user\nCurrent: ${currentRoles}\n\nEnter comma-separated roles:\n(delegate, evaluator, admin, super_admin)`, currentRoles);
+  if (!newRoles || newRoles.trim() === currentRoles) return;
 
   const data = await api('admin_update_user_role', { user_id: userId, roles: newRoles.trim() });
   if (!data.ok) { toast(data.error || 'Failed to update roles', 'err'); return; }
-  toast('Roles updated for ' + name, 'ok');
+  toast('Roles updated', 'ok');
   loadAdminUsers();
+}
+
+function hasRole(role) {
+  if (!CU) return false;
+  return String(CU.roles).split(',').map(r => r.trim()).includes(role);
 }
 
 // ── ADMIN CERTIFICATES ────────────────────────────────────────────────────────
@@ -2277,6 +2453,196 @@ async function doVerifyPublic() {
     </div>`;
 }
 
+// ── CHOICES (Dynamic Dropdowns) ───────────────────────────────────────────────
+
+async function loadChoices() {
+  try {
+    const data = await apiGet({ action: 'get_choices' });
+    if (!data.ok) return;
+    CHOICES = data.choices || {};
+    populateSelects();
+  } catch(e) {
+    console.warn('Could not load choices:', e);
+  }
+}
+
+function populateSelect(id, category) {
+  const el = document.getElementById(id);
+  const items = CHOICES[category];
+  if (!el || !items || !items.length) return;
+  const first = el.options[0]; // keep "Select..." placeholder
+  el.innerHTML = '';
+  el.appendChild(first);
+  items.forEach(item => {
+    const opt = document.createElement('option');
+    opt.value = item.value;
+    opt.textContent = item.label;
+    el.appendChild(opt);
+  });
+}
+
+function populateSelects() {
+  populateSelect('r-level',       'academic_level');
+  populateSelect('r-region',      'region');
+  populateSelect('r-nationality', 'nationality');
+  populateSelect('a-type',        'research_type');
+  populateSelect('a-specialty',   'specialty');
+  populateSelect('ev-level',      'eval_level');
+  populateSelect('ev-spec',       'eval_specialty');
+}
+
+// ── ADMIN DISCOUNT CODES ──────────────────────────────────────────────────────
+
+async function loadAdminDiscounts() {
+  const tb = document.getElementById('admin-disc-tb');
+  tb.innerHTML = '<tr><td colspan="8" class="empty-row">Loading...</td></tr>';
+  const data = await apiGet({ action: 'admin_discounts' });
+  if (!data.ok) { tb.innerHTML = `<tr><td colspan="8" class="empty-row">Error: ${escHtml(data.error)}</td></tr>`; return; }
+
+  if (!data.codes || !data.codes.length) {
+    tb.innerHTML = '<tr><td colspan="8" class="empty-row">No discount codes yet. Create one using the button above.</td></tr>';
+    return;
+  }
+
+  tb.innerHTML = data.codes.map(c => {
+    const isActive = c.active === true || String(c.active).toLowerCase() === 'true';
+    const usedStr  = `${c.used_count || 0} / ${Number(c.max_uses) === 0 ? '∞' : c.max_uses}`;
+    return `<tr>
+      <td><code style="font-size:12px;background:var(--g50);padding:2px 6px;border-radius:4px">${escHtml(c.code)}</code></td>
+      <td><span style="font-size:11px;color:var(--g500)">${escHtml(c.type)}</span></td>
+      <td><strong>${Number(c.amount)} SAR</strong></td>
+      <td>${usedStr}</td>
+      <td>${Number(c.max_uses) === 0 ? '<span style="color:var(--g500)">Unlimited</span>' : c.max_uses}</td>
+      <td style="font-size:12px;color:var(--g500);max-width:160px;word-break:break-word">${escHtml(c.description || '—')}</td>
+      <td><span class="badge ${isActive ? 'b-accept' : 'b-reject'}">${isActive ? 'Active' : 'Inactive'}</span></td>
+      <td style="white-space:nowrap">
+        <button class="btn btn-o btn-sm" onclick='openDiscountModal(${JSON.stringify(c)})'>Edit</button>
+        <button class="btn ${isActive ? 'btn-d' : 'btn-s'} btn-sm" onclick="toggleDiscount('${escHtml(c.code)}')">${isActive ? 'Deactivate' : 'Activate'}</button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function openDiscountModal(code) {
+  document.getElementById('disc-modal-title').textContent = code ? `Edit: ${code.code}` : 'New Discount Code';
+  document.getElementById('dm-code').value   = code ? code.code : '';
+  document.getElementById('dm-code').readOnly = !!code;
+  document.getElementById('dm-type').value   = code ? code.type : 'discount_fixed';
+  document.getElementById('dm-amount').value = code ? Number(code.amount) : '';
+  document.getElementById('dm-maxuses').value = code ? (code.max_uses || 0) : 0;
+  document.getElementById('dm-desc').value   = code ? (code.description || '') : '';
+  document.getElementById('discount-modal').style.display = 'flex';
+}
+
+async function doSaveDiscount() {
+  const code     = document.getElementById('dm-code').value.trim();
+  const type     = document.getElementById('dm-type').value;
+  const amount   = document.getElementById('dm-amount').value;
+  const max_uses = document.getElementById('dm-maxuses').value;
+  const desc     = document.getElementById('dm-desc').value.trim();
+
+  if (!code || !type || amount === '') { toast('Code, type and amount are required', 'err'); return; }
+  if (Number(amount) < 0) { toast('Amount cannot be negative', 'err'); return; }
+
+  const btn = document.getElementById('dm-btn');
+  setLoading(btn, true);
+  const data = await api('admin_save_discount', { code, type, amount: Number(amount), max_uses: Number(max_uses) || 0, description: desc });
+  setLoading(btn, false);
+
+  if (!data.ok) { toast(data.error || 'Failed to save discount code', 'err'); return; }
+  toast(data.message, 'ok');
+  closeModal('discount-modal');
+  loadAdminDiscounts();
+}
+
+async function toggleDiscount(code) {
+  const data = await api('admin_toggle_discount', { code });
+  if (!data.ok) { toast(data.error || 'Failed to toggle code', 'err'); return; }
+  toast(data.message, 'ok');
+  loadAdminDiscounts();
+}
+
+// ── ADMIN USER MANAGEMENT ─────────────────────────────────────────────────────
+
+function openCreateAdminModal() {
+  ['ca-name','ca-email','ca-pass'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('ca-role').value = 'admin';
+  document.getElementById('create-admin-modal').style.display = 'flex';
+}
+
+async function doCreateAdmin() {
+  const full_name = document.getElementById('ca-name').value.trim();
+  const email     = document.getElementById('ca-email').value.trim();
+  const password  = document.getElementById('ca-pass').value;
+  const roles     = document.getElementById('ca-role').value;
+
+  if (!full_name || !email || !password) { toast('All fields are required', 'err'); return; }
+  if (password.length < 8) { toast('Password must be at least 8 characters', 'err'); return; }
+
+  const btn = document.getElementById('ca-btn');
+  setLoading(btn, true);
+  const data = await api('admin_create_user', { full_name, email, password, roles });
+  setLoading(btn, false);
+
+  if (!data.ok) { toast(data.error || 'Failed to create account', 'err'); return; }
+  toast(data.message, 'ok');
+  closeModal('create-admin-modal');
+  loadAdminUsers();
+}
+
+async function toggleUserActive(userId, currentlyActive) {
+  if (currentlyActive && !confirm('Deactivate this user? They will be signed out immediately and cannot log in.')) return;
+  const data = await api('admin_toggle_user', { user_id: userId });
+  if (!data.ok) { toast(data.error || 'Failed to update user', 'err'); return; }
+  toast(data.message, 'ok');
+  loadAdminUsers();
+}
+
+function filterUsersTable() {
+  const q    = (document.getElementById('user-search')?.value || '').toLowerCase();
+  const role = (document.getElementById('user-role-filter')?.value || '').toLowerCase();
+  const tb   = document.getElementById('admin-users-tb');
+  if (!allUsersCache.length) return;
+
+  const filtered = allUsersCache.filter(u => {
+    const matchQ    = !q || u.full_name.toLowerCase().includes(q) || u.email.toLowerCase().includes(q);
+    const matchRole = !role || String(u.roles).toLowerCase().includes(role);
+    return matchQ && matchRole;
+  });
+
+  renderUsersTable(filtered);
+}
+
+function renderUsersTable(users) {
+  const tb = document.getElementById('admin-users-tb');
+  const isSuperAdmin = CU && hasRole('super_admin');
+
+  if (!users.length) {
+    tb.innerHTML = '<tr><td colspan="7" class="empty-row">No users found.</td></tr>';
+    return;
+  }
+
+  tb.innerHTML = users.map(u => {
+    const isActive = u.is_active === true || String(u.is_active).toLowerCase() !== 'false';
+    const roles    = String(u.roles || 'delegate');
+    const isAdmin  = roles.includes('admin') || roles.includes('super_admin');
+    return `<tr>
+      <td><strong>${escHtml(u.full_name)}</strong></td>
+      <td style="font-size:12px;color:var(--g500)">${escHtml(u.email)}</td>
+      <td style="font-size:12px">${escHtml(u.university || '—')}</td>
+      <td style="font-size:12px">${escHtml(u.academic_level || '—')}</td>
+      <td>${roles.split(',').map(r => `<span class="badge b-${r.trim().includes('admin') ? 'sub' : 'draft'}" style="margin:1px">${escHtml(r.trim())}</span>`).join('')}</td>
+      <td><span class="badge ${isActive ? 'b-accept' : 'b-reject'}">${isActive ? 'Active' : 'Inactive'}</span></td>
+      <td style="white-space:nowrap">
+        ${isSuperAdmin ? `
+          <button class="btn btn-o btn-sm" onclick="promoteUser('${u.id}','${escHtml(roles)}')">Roles</button>
+          <button class="btn btn-sm ${isActive ? 'btn-d' : 'btn-s'}" onclick="toggleUserActive('${u.id}',${isActive})">${isActive ? 'Deactivate' : 'Activate'}</button>
+        ` : '<span style="font-size:12px;color:var(--g300)">—</span>'}
+      </td>
+    </tr>`;
+  }).join('');
+}
+
 // ── PUBLIC CERTIFICATE VERIFY ─────────────────────────────────────────────────
 
 async function verifyPublicCert() {
@@ -2288,23 +2654,24 @@ async function verifyPublicCert() {
   setLoading(btn, true);
   resultBox.style.display = 'none';
 
-  const data = await apiGet('verify_cert', { code });
+  const data = await apiGet({ action: 'verify_cert', code });
   setLoading(btn, false);
 
   if (!data.ok) {
-    resultBox.style.cssText = 'display:block;background:var(--err-bg,#fff1f0);border:1.5px solid #ffa39e;border-radius:10px;padding:16px;font-size:13px;color:#cf1322';
+    resultBox.style.cssText = 'display:block;background:#fff1f0;border:1.5px solid #ffa39e;border-radius:10px;padding:16px;font-size:13px;color:#cf1322';
     resultBox.innerHTML = '<strong>❌ Certificate Not Found</strong><br>This code does not match any issued certificate. Please check the code and try again.';
     return;
   }
 
-  const c = data.certificate;
+  const c = data.cert;
   resultBox.style.cssText = 'display:block;background:#f6ffed;border:1.5px solid #b7eb8f;border-radius:10px;padding:16px;font-size:13px;color:#135200';
   resultBox.innerHTML = `
     <strong>✅ Certificate Verified</strong><br><br>
-    <strong>Recipient:</strong> ${escHtml(c.full_name)}<br>
+    <strong>Recipient:</strong> ${escHtml(c.recipient)}<br>
     <strong>Certificate Type:</strong> ${escHtml(c.cert_type)}<br>
     <strong>Issued On:</strong> ${formatDate(c.issued_at)}<br>
-    <strong>Code:</strong> <span style="font-family:monospace">${escHtml(c.cert_code)}</span>
+    <strong>Conference:</strong> ${escHtml(c.conference)}<br>
+    <strong>Code:</strong> <span style="font-family:monospace">${escHtml(c.cert_id)}</span>
   `;
 }
 
@@ -2312,6 +2679,8 @@ async function verifyPublicCert() {
 
 window.addEventListener('DOMContentLoaded', async () => {
   checkResetToken();
+  // Pre-load choices in background (populates dropdowns before user reaches forms)
+  loadChoices();
   await tryAutoLogin();
 });
 </script>
