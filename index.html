@@ -7,7 +7,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Mulish:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     /* ════════════════════════════════════════════
-       MSRC 2026 · SPACE / GALAXY THEMEs s s sss s
+       MSRC 2026 · SPACE / GALAXY THEME
     ════════════════════════════════════════════ */
     :root {
       --navy:        #1a0645;
@@ -59,153 +59,13 @@
       z-index: 0;
       pointer-events: none;
     }
-    
-    /* Make body click-through directly to canvas for burst effect */
-    body { cursor: default; }
-    
+
     /* ── EVERYTHING ABOVE CANVAS ── */
     #auth-section, #app, .modal-bg, .toast {
       position: relative;
       z-index: 1;
     }
 
-    /* ════════════ AUTH ════════════ */
-    .auth-wrap {
-      min-height: 100vh;
-      display: flex;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .auth-brand {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 60px;
-      position: relative;
-      pointer-events: none; /* Allows clicking through to background burst */
-    }
-
-    .brand-logo {
-      font-family: 'Cinzel', serif;
-      font-size: 88px;
-      font-weight: 700;
-      color: var(--gold);
-      letter-spacing: -2px;
-      line-height: 1;
-      text-shadow: 0 0 60px rgba(212,175,55,0.4), 0 0 120px rgba(212,175,55,0.15);
-    }
-
-    .brand-full {
-      color: rgba(255,255,255,0.6);
-      font-size: 13px;
-      margin-top: 14px;
-      text-align: center;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      font-weight: 300;
-    }
-
-    .brand-year {
-      display: inline-block;
-      margin-top: 20px;
-      padding: 6px 20px;
-      border: 1px solid rgba(212,175,55,0.3);
-      border-radius: 30px;
-      color: var(--gold);
-      font-size: 11px;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      font-weight: 600;
-      pointer-events: auto;
-    }
-
-    .brand-desc {
-      color: rgba(255,255,255,0.35);
-      font-size: 13px;
-      margin-top: 28px;
-      text-align: center;
-      max-width: 300px;
-      line-height: 1.9;
-      font-weight: 300;
-    }
-
-    .brand-feats {
-      margin-top: 44px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .brand-feat {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      color: rgba(255,255,255,0.45);
-      font-size: 13px;
-      font-weight: 300;
-    }
-
-    .brand-feat::before {
-      content: '';
-      width: 4px;
-      height: 4px;
-      border-radius: 50%;
-      background: var(--gold);
-      opacity: 0.6;
-      flex-shrink: 0;
-    }
-
-    .auth-panel {
-      width: 480px;
-      background: var(--gc);
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
-      border-left: 1px solid var(--gbd);
-      padding: 52px 48px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      overflow-y: auto;
-    }
-
-    .auth-title {
-      font-family: 'Cinzel', serif;
-      font-size: 26px;
-      font-weight: 600;
-      color: var(--g900);
-      margin-bottom: 6px;
-    }
-
-    .auth-sub {
-      color: var(--g500);
-      font-size: 13px;
-      margin-bottom: 32px;
-      font-weight: 300;
-    }
-
-    .auth-foot {
-      text-align: center;
-      margin-top: 22px;
-      font-size: 13px;
-      color: var(--g500);
-    }
-
-    .auth-link {
-      color: var(--gold);
-      font-weight: 600;
-      cursor: pointer;
-      transition: var(--tr);
-    }
-    .auth-link:hover { color: var(--gold-light); text-decoration: underline; }
-
-    .auth-divider {
-      height: 1px;
-      background: var(--gbd);
-      margin: 24px 0;
-    }
     /* ════════════ AUTH ════════════ */
     .auth-wrap {
       min-height: 100vh;
@@ -935,7 +795,7 @@
       <div class="auth-title">Create Account</div>
       <div class="auth-sub">Join MSRC 2026 Conference</div>
       <div class="frow">
-        <div class="fg"><label class="flbl req">Full Name</label><input class="fi" id="r-name" placeholder="Sadia Shukri"></div>
+        <div class="fg"><label class="flbl req">Full Name</label><input class="fi" id="r-name" placeholder="Ahmad Al-Rashidi"></div>
         <div class="fg"><label class="flbl req">Phone</label><input class="fi" id="r-phone" placeholder="+966 5X XXX XXXX"></div>
       </div>
       <div class="fg"><label class="flbl req">Email Address</label><input class="fi" id="r-email" type="email" placeholder="your@email.com"></div>
@@ -1836,14 +1696,14 @@ function initStarfield() {
   }
 
   setInterval(() => {
-    if (Math.random() < 0.6) shooters.push({
+    if (Math.random() < 0.35) shooters.push({
       x: Math.random() * W * 0.75,
       y: Math.random() * H * 0.45,
-      vx: 15 + Math.random() * 10,
-      vy: 4 + Math.random() * 5,
+      vx: 4 + Math.random() * 5,
+      vy: 1.5 + Math.random() * 2.5,
       life: 1
     });
-  }, 800);
+  }, 3800);
 
   function frame() {
     requestAnimationFrame(frame);
@@ -1852,10 +1712,10 @@ function initStarfield() {
     ctx.fillRect(0, 0, W, H);
     if (nebulaImg) ctx.drawImage(nebulaImg, 0, 0);
 
-    smooth.x += (mouse.x - smooth.x) * 0.15;
-    smooth.y += (mouse.y - smooth.y) * 0.15;
-    const dx = (smooth.x / W - 0.5) * 150;
-    const dy = (smooth.y / H - 0.5) * 100;
+    smooth.x += (mouse.x - smooth.x) * 0.04;
+    smooth.y += (mouse.y - smooth.y) * 0.04;
+    const dx = (smooth.x / W - 0.5) * 36;
+    const dy = (smooth.y / H - 0.5) * 22;
 
     stars.forEach(s => {
       s.tw += s.ts;
@@ -1908,6 +1768,61 @@ let currentAssignEvalId = null; // evaluator being assigned to
 let CHOICES   = {};     // dynamic dropdown choices from backend
 let currentPage = 'dashboard'; // tracks current page for form clearing
 let allUsersCache = []; // cached users list for client-side filtering
+
+// ── CLIENT-SIDE DATA CACHE ────────────────────────────────────────────────────
+// Stores { data, ts } per action key. Avoids re-fetching on every nav.
+const _cache = {};
+const CACHE_TTL = {
+  get_my_abstracts:     60,   // 60 s — user's own abstracts
+  get_assignments:      60,
+  get_my_certs:         120,
+  get_eval_status:      30,
+  get_profile:          120,
+  admin_stats:          30,
+  admin_abstracts:      30,
+  admin_evaluator_apps: 30,
+  admin_registrations:  30,
+  admin_users:          60,
+  admin_discounts:      120,
+};
+
+function cacheKey(params) {
+  return params.action + (params.status || '') + (params.search || '');
+}
+
+function cacheGet(key) {
+  const entry = _cache[key];
+  if (!entry) return null;
+  const ttl = CACHE_TTL[key.replace(/[^a-z_]/g, '')] || 30;
+  if (Date.now() - entry.ts > ttl * 1000) { delete _cache[key]; return null; }
+  return entry.data;
+}
+
+function cacheSet(key, data) { _cache[key] = { data, ts: Date.now() }; }
+function cacheInvalidate(...keys) { keys.forEach(k => { delete _cache[k]; delete _cache[k + '']; }); }
+
+// ── REQUEST DEDUPLICATION ─────────────────────────────────────────────────────
+// Prevents double-firing the same request when user clicks rapidly
+const _pending = {};
+async function apiGetCached(params) {
+  const key = cacheKey(params);
+  const cached = cacheGet(key);
+  if (cached) return cached;
+  if (_pending[key]) return _pending[key]; // reuse in-flight promise
+  const promise = apiGet(params).then(data => {
+    delete _pending[key];
+    if (data.ok) cacheSet(key, data);
+    return data;
+  }).catch(e => { delete _pending[key]; return { ok: false, error: 'Network error' }; });
+  _pending[key] = promise;
+  return promise;
+}
+
+// Debounce helper for search inputs
+function debounce(fn, ms = 320) {
+  let t;
+  return (...args) => { clearTimeout(t); t = setTimeout(() => fn(...args), ms); };
+}
 
 // ── API HELPERS ───────────────────────────────────────────────────────────────
 
@@ -2225,7 +2140,7 @@ async function tryAutoLogin() {
   const stored = localStorage.getItem('msrc_token');
   if (!stored) return;
   TOKEN = stored;
-  const data = await apiGet({ action: 'get_profile' });
+  const data = await apiGetCached({ action: 'get_profile' });
   if (data.ok && data.user) {
     CU = data.user;
     initApp();
@@ -2353,7 +2268,7 @@ async function loadMyAbstracts() {
   const tb = document.getElementById('my-abs-tb');
   if (!tb) return;
   tb.innerHTML = '<tr><td colspan="6" class="loading-row"><span class="spinner spinner-d"></span> Loading…</td></tr>';
-  const data = await apiGet({ action: 'get_my_abstracts' });
+  const data = await apiGetCached({ action: 'get_my_abstracts' });
   if (!data.ok) { tb.innerHTML = `<tr><td colspan="6" class="loading-row" style="color:var(--danger)">${data.error}</td></tr>`; return; }
 
   const abs = data.abstracts || [];
@@ -2389,7 +2304,7 @@ async function doSaveDraft() {
 // ── EVALUATOR APPLICATION ─────────────────────────────────────────────────────
 
 async function loadEvalApplicationStatus() {
-  const data = await apiGet({ action: 'get_eval_status' });
+  const data = await apiGetCached({ action: 'get_eval_status' });
   if (!data.ok || !data.application) return;
   const app = data.application;
 
@@ -2438,7 +2353,7 @@ async function loadEvalWork() {
   const tb = document.getElementById('eval-work-tb');
   if (!tb) return;
   tb.innerHTML = '<tr><td colspan="6" class="loading-row"><span class="spinner spinner-d"></span> Loading…</td></tr>';
-  const data = await apiGet({ action: 'get_assignments' });
+  const data = await apiGetCached({ action: 'get_assignments' });
   if (!data.ok) { tb.innerHTML = `<tr><td colspan="6" class="loading-row" style="color:var(--danger)">${data.error}</td></tr>`; return; }
 
   const assignments = data.assignments || [];
@@ -2602,7 +2517,7 @@ async function loadMyCerts() {
   const wrap = document.getElementById('certs-wrap');
   if (!wrap) return;
   wrap.innerHTML = '<div class="empty"><span class="spinner spinner-d"></span></div>';
-  const data = await apiGet({ action: 'get_my_certs' });
+  const data = await apiGetCached({ action: 'get_my_certs' });
   if (!data.ok) { wrap.innerHTML = `<div class="empty"><div class="empty-title" style="color:var(--danger)">${data.error}</div></div>`; return; }
 
   const certs = data.certificates || [];
@@ -2657,8 +2572,14 @@ function verifyCertPublic() {
 // ── ADMIN STATS ───────────────────────────────────────────────────────────────
 
 async function loadAdminStats() {
+  const stale = cacheGet('admin_stats');
+  if (stale) renderAdminStats(stale);
   const data = await apiGet({ action: 'admin_stats' });
-  if (!data.ok) { toast('Could not load admin stats', 'err'); return; }
+  if (data.ok) { cacheSet('admin_stats', data); renderAdminStats(data); }
+  return;
+}
+function renderAdminStats(data) {
+  if (!data || !data.stats) return;
   const s = data.stats;
   const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
   set('stat-users',     s.users);
@@ -2699,9 +2620,19 @@ async function loadAdminStats() {
 async function loadAdminAbstracts() {
   const tb = document.getElementById('admin-abs-tb');
   if (!tb) return;
-  tb.innerHTML = '<tr><td colspan="7" class="loading-row"><span class="spinner spinner-d"></span> Loading…</td></tr>';
+  // Show stale cache instantly, then refresh in background
+  const stale = cacheGet('admin_abstracts');
+  if (stale) { renderAdminAbstracts(stale); }
+  else { tb.innerHTML = '<tr><td colspan="7" class="loading-row"><span class="spinner spinner-d"></span> Loading…</td></tr>'; }
   const data = await apiGet({ action: 'admin_abstracts' });
-  if (!data.ok) { tb.innerHTML = `<tr><td colspan="7" class="loading-row" style="color:var(--danger)">${data.error}</td></tr>`; return; }
+  if (data.ok) cacheSet('admin_abstracts', data);
+  if (!data.ok) { if (!stale) tb.innerHTML = `<tr><td colspan="7" class="loading-row" style="color:var(--danger)">${escHtml(data.error)}</td></tr>`; return; }
+  renderAdminAbstracts(data);
+}
+
+function renderAdminAbstracts(data) {
+  const tb = document.getElementById('admin-abs-tb');
+  if (!tb) return;
 
   const abs = data.abstracts || [];
   const cnt = document.getElementById('abs-count');
@@ -2774,8 +2705,10 @@ async function updateAbsStatus(sel) {
 async function loadAdminEvalApps() {
   const tb = document.getElementById('admin-eval-tb');
   if (!tb) return;
-  tb.innerHTML = '<tr><td colspan="7" class="loading-row"><span class="spinner spinner-d"></span> Loading…</td></tr>';
+  const stale = cacheGet('admin_evaluator_apps');
+  if (!stale) tb.innerHTML = '<tr><td colspan="7" class="loading-row"><span class="spinner spinner-d"></span> Loading…</td></tr>';
   const data = await apiGet({ action: 'admin_evaluator_apps' });
+  if (data.ok) cacheSet('admin_evaluator_apps', data);
   if (!data.ok) { tb.innerHTML = `<tr><td colspan="7" class="loading-row" style="color:var(--danger)">${data.error}</td></tr>`; return; }
 
   const apps = data.applications || [];
@@ -2824,8 +2757,10 @@ async function evalAction(action, appId, btn) {
 async function loadAdminRegistrations() {
   const tb = document.querySelector('#page-admin-registrations table tbody');
   if (!tb) return;
-  tb.innerHTML = '<tr><td colspan="7" class="loading-row"><span class="spinner spinner-d"></span> Loading…</td></tr>';
+  const stale = cacheGet('admin_registrations');
+  if (!stale) tb.innerHTML = '<tr><td colspan="7" class="loading-row"><span class="spinner spinner-d"></span> Loading…</td></tr>';
   const data = await apiGet({ action: 'admin_registrations' });
+  if (data.ok) cacheSet('admin_registrations', data);
   if (!data.ok) { tb.innerHTML = `<tr><td colspan="7" class="loading-row" style="color:var(--danger)">${data.error}</td></tr>`; return; }
 
   const regs = data.registrations || [];
@@ -2863,10 +2798,12 @@ async function loadAdminRegistrations() {
 async function loadAdminUsers() {
   const tb = document.getElementById('admin-users-tb');
   if (!tb) return;
-  tb.innerHTML = '<tr><td colspan="7" class="loading-row"><span class="spinner spinner-d"></span> Loading…</td></tr>';
+  const stale = cacheGet('admin_users');
+  if (stale) { allUsersCache = stale.users || []; renderUsersTable(allUsersCache); }
+  else { tb.innerHTML = '<tr><td colspan="7" class="loading-row"><span class="spinner spinner-d"></span> Loading…</td></tr>'; }
   const data = await apiGet({ action: 'admin_users' });
-  if (!data.ok) { tb.innerHTML = `<tr><td colspan="7" class="loading-row" style="color:var(--danger)">${data.error}</td></tr>`; return; }
-
+  if (!data.ok) { if (!stale) tb.innerHTML = `<tr><td colspan="7" class="loading-row" style="color:var(--danger)">${escHtml(data.error)}</td></tr>`; return; }
+  cacheSet('admin_users', data);
   allUsersCache = data.users || [];
   const cnt = document.getElementById('users-count');
   if (cnt) cnt.textContent = allUsersCache.length;
@@ -2884,6 +2821,7 @@ async function promoteUser(userId, currentRoles) {
 
   const data = await api('admin_update_user_role', { user_id: userId, roles: newRoles.trim() });
   if (!data.ok) { toast(data.error || 'Failed to update roles', 'err'); return; }
+  cacheInvalidate('admin_users');
   toast('Roles updated', 'ok');
   loadAdminUsers();
 }
@@ -2957,7 +2895,7 @@ async function loadAssignableAbstracts(evaluatorId) {
   if (!tbody) return;
   tbody.innerHTML = '<tr><td colspan="4" class="loading-row"><span class="spinner spinner-d"></span></td></tr>';
 
-  const data = await apiGet({ action: 'admin_abstracts' });
+  const data = await apiGetCached({ action: 'admin_abstracts' });
   if (!data.ok || !data.abstracts) return;
 
   const available = data.abstracts.filter(a => a.status === 'submitted' || a.status === 'under_review');
@@ -3143,7 +3081,7 @@ function populateSelects() {
 async function loadAdminDiscounts() {
   const tb = document.getElementById('admin-disc-tb');
   tb.innerHTML = '<tr><td colspan="8" class="empty-row">Loading...</td></tr>';
-  const data = await apiGet({ action: 'admin_discounts' });
+  const data = await apiGetCached({ action: 'admin_discounts' });
   if (!data.ok) { tb.innerHTML = `<tr><td colspan="8" class="empty-row">Error: ${escHtml(data.error)}</td></tr>`; return; }
 
   if (!data.codes || !data.codes.length) {
@@ -3197,6 +3135,7 @@ async function doSaveDiscount() {
   setLoading(btn, false);
 
   if (!data.ok) { toast(data.error || 'Failed to save discount code', 'err'); return; }
+  cacheInvalidate('admin_discounts');
   toast(data.message, 'ok');
   closeModal('discount-modal');
   loadAdminDiscounts();
@@ -3205,6 +3144,7 @@ async function doSaveDiscount() {
 async function toggleDiscount(code) {
   const data = await api('admin_toggle_discount', { code });
   if (!data.ok) { toast(data.error || 'Failed to toggle code', 'err'); return; }
+  cacheInvalidate('admin_discounts');
   toast(data.message, 'ok');
   loadAdminDiscounts();
 }
@@ -3241,11 +3181,12 @@ async function toggleUserActive(userId, currentlyActive) {
   if (currentlyActive && !confirm('Deactivate this user? They will be signed out immediately and cannot log in.')) return;
   const data = await api('admin_toggle_user', { user_id: userId });
   if (!data.ok) { toast(data.error || 'Failed to update user', 'err'); return; }
+  cacheInvalidate('admin_users');
   toast(data.message, 'ok');
   loadAdminUsers();
 }
 
-function filterUsersTable() {
+const filterUsersTable = debounce(function _filterUsers() {
   const q    = (document.getElementById('user-search')?.value || '').toLowerCase();
   const role = (document.getElementById('user-role-filter')?.value || '').toLowerCase();
   const tb   = document.getElementById('admin-users-tb');
@@ -3258,7 +3199,7 @@ function filterUsersTable() {
   });
 
   renderUsersTable(filtered);
-}
+}, 250);
 
 function renderUsersTable(users) {
   const tb = document.getElementById('admin-users-tb');
